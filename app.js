@@ -389,6 +389,48 @@ const PRACTICE_2024_PATTERNS = [
     ]
 ];
 
+// ==================== 2024 PRACTICE CHAIN ====================
+const PRACTICE_2024_CHAIN = [
+    // Set 1
+    [
+        { display: '9 + 7 \u2212 8 + 3 = ?', speech: '9 plus 7 minus 8 plus 3', answer: 11 },
+        { display: '8 + 9 \u2212 3 + 7 = ?', speech: '8 plus 9 minus 3 plus 7', answer: 21 },
+        { display: '9 \u2212 3 \u2212 4 + 7 = ?', speech: '9 minus 3 minus 4 plus 7', answer: 9 },
+        { display: '6 \u2212 4 + 8 + 7 = ?', speech: '6 minus 4 plus 8 plus 7', answer: 17 },
+        { display: '7 + 9 \u2212 4 + 8 = ?', speech: '7 plus 9 minus 4 plus 8', answer: 20 },
+        { display: '4 + 7 \u2212 8 + 5 = ?', speech: '4 plus 7 minus 8 plus 5', answer: 8 },
+        { display: '5 \u2212 3 \u2212 1 + 7 = ?', speech: '5 minus 3 minus 1 plus 7', answer: 8 },
+        { display: '6 + 5 \u2212 4 + 8 = ?', speech: '6 plus 5 minus 4 plus 8', answer: 15 },
+        { display: '3 + 8 + 7 \u2212 4 = ?', speech: '3 plus 8 plus 7 minus 4', answer: 14 },
+        { display: '9 + 5 \u2212 4 \u2212 3 = ?', speech: '9 plus 5 minus 4 minus 3', answer: 7 }
+    ],
+    // Set 2
+    [
+        { display: '8 \u2212 6 + 9 \u2212 4 = ?', speech: '8 minus 6 plus 9 minus 4', answer: 7 },
+        { display: '3 + 8 + 6 \u2212 9 = ?', speech: '3 plus 8 plus 6 minus 9', answer: 8 },
+        { display: '5 \u2212 4 + 8 + 7 = ?', speech: '5 minus 4 plus 8 plus 7', answer: 16 },
+        { display: '7 + 7 \u2212 6 \u2212 3 = ?', speech: '7 plus 7 minus 6 minus 3', answer: 5 },
+        { display: '8 + 7 + 6 \u2212 9 = ?', speech: '8 plus 7 plus 6 minus 9', answer: 12 },
+        { display: '4 + 9 \u2212 7 + 8 = ?', speech: '4 plus 9 minus 7 plus 8', answer: 14 },
+        { display: '6 + 7 + 8 \u2212 4 = ?', speech: '6 plus 7 plus 8 minus 4', answer: 17 },
+        { display: '5 + 7 + 6 \u2212 5 = ?', speech: '5 plus 7 plus 6 minus 5', answer: 13 },
+        { display: '8 + 9 \u2212 4 \u2212 5 = ?', speech: '8 plus 9 minus 4 minus 5', answer: 8 },
+        { display: '7 + 5 \u2212 8 + 3 = ?', speech: '7 plus 5 minus 8 plus 3', answer: 7 }
+    ],
+    // Set 3
+    [
+        { display: '5 + 4 + 9 \u2212 6 = ?', speech: '5 plus 4 plus 9 minus 6', answer: 12 },
+        { display: '3 + 2 + 8 \u2212 5 = ?', speech: '3 plus 2 plus 8 minus 5', answer: 8 },
+        { display: '6 + 4 \u2212 5 + 3 = ?', speech: '6 plus 4 minus 5 plus 3', answer: 8 },
+        { display: '8 + 7 \u2212 6 + 9 = ?', speech: '8 plus 7 minus 6 plus 9', answer: 18 },
+        { display: '4 + 7 \u2212 9 + 3 = ?', speech: '4 plus 7 minus 9 plus 3', answer: 5 },
+        { display: '4 + 8 + 7 \u2212 3 = ?', speech: '4 plus 8 plus 7 minus 3', answer: 16 },
+        { display: '7 + 3 \u2212 5 + 9 = ?', speech: '7 plus 3 minus 5 plus 9', answer: 14 },
+        { display: '6 + 7 + 9 \u2212 4 = ?', speech: '6 plus 7 plus 9 minus 4', answer: 18 },
+        { display: '3 + 2 + 6 \u2212 5 = ?', speech: '3 plus 2 plus 6 minus 5', answer: 6 }
+    ]
+];
+
 // ==================== STATE ====================
 const state = {
     currentRound: 0,
@@ -759,6 +801,29 @@ function startPractice2024Patterns() {
             emoji: '\u{1F522}',
             description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_PATTERNS.length,
             generator: ((idx) => () => shuffle([...PRACTICE_2024_PATTERNS[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
+function startPractice2024Chain() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2024_CHAIN.length; i++) {
+        ROUNDS.push({
+            name: 'Chain Set ' + (i + 1),
+            emoji: '\u{1F517}',
+            description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_CHAIN.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2024_CHAIN[idx]]))(i)
         });
     }
 
@@ -1192,6 +1257,7 @@ function setupEventListeners() {
     $('btn-practice-2020-chain').addEventListener('click', startPractice2020Chain);
     $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
     $('btn-practice-2024-patterns').addEventListener('click', startPractice2024Patterns);
+    $('btn-practice-2024-chain').addEventListener('click', startPractice2024Chain);
     $('btn-begin-round').addEventListener('click', beginRound);
 
     // Practice round buttons
