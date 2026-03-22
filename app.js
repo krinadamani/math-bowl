@@ -346,6 +346,49 @@ const PRACTICE_2020_ADDING = [
     ]
 ];
 
+// ==================== 2024 PRACTICE PATTERNS ====================
+const PRACTICE_2024_PATTERNS = [
+    // Set 1
+    [
+        { display: '0, 3, 9, 18, ?', speech: 'What comes next? 0, 3, 9, 18', answer: 30 },
+        { display: '70, 55, 40, 25, ?', speech: 'What comes next? 70, 55, 40, 25', answer: 10 },
+        { display: '3, 7, 11, 15, ?', speech: 'What comes next? 3, 7, 11, 15', answer: 19 },
+        { display: '44, 33, 22, 11, ?', speech: 'What comes next? 44, 33, 22, 11', answer: 0 },
+        { display: '98, 87, 76, 65, ?', speech: 'What comes next? 98, 87, 76, 65', answer: 54 },
+        { display: '0, 4, 8, 12, ?', speech: 'What comes next? 0, 4, 8, 12', answer: 16 },
+        { display: '20, 16, 12, 8, ?', speech: 'What comes next? 20, 16, 12, 8', answer: 4 },
+        { display: '47, 44, 41, 38, ?', speech: 'What comes next? 47, 44, 41, 38', answer: 35 },
+        { display: '6, 9, 12, 15, ?', speech: 'What comes next? 6, 9, 12, 15', answer: 18 },
+        { display: '90, 85, 80, 75, ?', speech: 'What comes next? 90, 85, 80, 75', answer: 70 }
+    ],
+    // Set 2
+    [
+        { display: '2, 5, 8, 11, ?', speech: 'What comes next? 2, 5, 8, 11', answer: 14 },
+        { display: '0, 20, 40, 60, ?', speech: 'What comes next? 0, 20, 40, 60', answer: 80 },
+        { display: '6, 12, 18, 24, ?', speech: 'What comes next? 6, 12, 18, 24', answer: 30 },
+        { display: '90, 78, 66, 54, ?', speech: 'What comes next? 90, 78, 66, 54', answer: 42 },
+        { display: '3, 11, 19, 27, ?', speech: 'What comes next? 3, 11, 19, 27', answer: 35 },
+        { display: '20, 19, 17, 14, ?', speech: 'What comes next? 20, 19, 17, 14', answer: 10 },
+        { display: '80, 65, 50, 35, ?', speech: 'What comes next? 80, 65, 50, 35', answer: 20 },
+        { display: '1, 3, 7, 15, ?', speech: 'What comes next? 1, 3, 7, 15', answer: 31 },
+        { display: '90, 85, 80, 75, ?', speech: 'What comes next? 90, 85, 80, 75', answer: 70 },
+        { display: '2, 4, 8, 16, ?', speech: 'What comes next? 2, 4, 8, 16', answer: 32 }
+    ],
+    // Set 3
+    [
+        { display: '3, 6, 9, 12, ?', speech: 'What comes next? 3, 6, 9, 12', answer: 15 },
+        { display: '4, 8, 12, 16, ?', speech: 'What comes next? 4, 8, 12, 16', answer: 20 },
+        { display: '35, 28, 21, 14, ?', speech: 'What comes next? 35, 28, 21, 14', answer: 7 },
+        { display: '7, 11, 15, 19, ?', speech: 'What comes next? 7, 11, 15, 19', answer: 23 },
+        { display: '25, 19, 13, 7, ?', speech: 'What comes next? 25, 19, 13, 7', answer: 1 },
+        { display: '90, 70, 50, 30, ?', speech: 'What comes next? 90, 70, 50, 30', answer: 10 },
+        { display: '1, 12, 23, 34, ?', speech: 'What comes next? 1, 12, 23, 34', answer: 45 },
+        { display: '70, 65, 60, 55, ?', speech: 'What comes next? 70, 65, 60, 55', answer: 50 },
+        { display: '18, 15, 12, 9, ?', speech: 'What comes next? 18, 15, 12, 9', answer: 6 },
+        { display: '8, 6, 4, 2, ?', speech: 'What comes next? 8, 6, 4, 2', answer: 0 }
+    ]
+];
+
 // ==================== STATE ====================
 const state = {
     currentRound: 0,
@@ -693,6 +736,29 @@ function startPractice2020Adding() {
             emoji: '\u2795',
             description: '2020 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_ADDING.length,
             generator: ((idx) => () => shuffle([...PRACTICE_2020_ADDING[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
+function startPractice2024Patterns() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2024_PATTERNS.length; i++) {
+        ROUNDS.push({
+            name: 'Patterns Set ' + (i + 1),
+            emoji: '\u{1F522}',
+            description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_PATTERNS.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2024_PATTERNS[idx]]))(i)
         });
     }
 
@@ -1125,6 +1191,7 @@ function setupEventListeners() {
     $('btn-practice-2020').addEventListener('click', startPractice2020);
     $('btn-practice-2020-chain').addEventListener('click', startPractice2020Chain);
     $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
+    $('btn-practice-2024-patterns').addEventListener('click', startPractice2024Patterns);
     $('btn-begin-round').addEventListener('click', beginRound);
 
     // Practice round buttons
