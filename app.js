@@ -431,6 +431,48 @@ const PRACTICE_2024_CHAIN = [
     ]
 ];
 
+const PRACTICE_2024_ADDING = [
+    // Set 1
+    [
+        { display: '65 + 23 = ?', speech: '65 plus 23', answer: 88 },
+        { display: '16 + 32 = ?', speech: '16 plus 32', answer: 48 },
+        { display: '41 + 55 = ?', speech: '41 plus 55', answer: 96 },
+        { display: '36 + 23 = ?', speech: '36 plus 23', answer: 59 },
+        { display: '14 + 24 = ?', speech: '14 plus 24', answer: 38 },
+        { display: '73 + 14 = ?', speech: '73 plus 14', answer: 87 },
+        { display: '54 + 13 = ?', speech: '54 plus 13', answer: 67 },
+        { display: '26 + 12 = ?', speech: '26 plus 12', answer: 38 },
+        { display: '35 + 14 = ?', speech: '35 plus 14', answer: 49 },
+        { display: '38 + 21 = ?', speech: '38 plus 21', answer: 59 }
+    ],
+    // Set 2
+    [
+        { display: '47 + 31 = ?', speech: '47 plus 31', answer: 78 },
+        { display: '17 + 32 = ?', speech: '17 plus 32', answer: 49 },
+        { display: '43 + 26 = ?', speech: '43 plus 26', answer: 69 },
+        { display: '12 + 34 = ?', speech: '12 plus 34', answer: 46 },
+        { display: '18 + 51 = ?', speech: '18 plus 51', answer: 69 },
+        { display: '75 + 12 = ?', speech: '75 plus 12', answer: 87 },
+        { display: '14 + 51 = ?', speech: '14 plus 51', answer: 65 },
+        { display: '25 + 24 = ?', speech: '25 plus 24', answer: 49 },
+        { display: '32 + 65 = ?', speech: '32 plus 65', answer: 97 },
+        { display: '33 + 44 = ?', speech: '33 plus 44', answer: 77 }
+    ],
+    // Set 3
+    [
+        { display: '13 + 45 = ?', speech: '13 plus 45', answer: 58 },
+        { display: '62 + 14 = ?', speech: '62 plus 14', answer: 76 },
+        { display: '23 + 56 = ?', speech: '23 plus 56', answer: 79 },
+        { display: '18 + 31 = ?', speech: '18 plus 31', answer: 49 },
+        { display: '16 + 41 = ?', speech: '16 plus 41', answer: 57 },
+        { display: '52 + 33 = ?', speech: '52 plus 33', answer: 85 },
+        { display: '17 + 32 = ?', speech: '17 plus 32', answer: 49 },
+        { display: '25 + 31 = ?', speech: '25 plus 31', answer: 56 },
+        { display: '66 + 22 = ?', speech: '66 plus 22', answer: 88 },
+        { display: '45 + 11 = ?', speech: '45 plus 11', answer: 56 }
+    ]
+];
+
 // ==================== STATE ====================
 const state = {
     currentRound: 0,
@@ -824,6 +866,29 @@ function startPractice2024Chain() {
             emoji: '\u{1F517}',
             description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_CHAIN.length,
             generator: ((idx) => () => shuffle([...PRACTICE_2024_CHAIN[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
+function startPractice2024Adding() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2024_ADDING.length; i++) {
+        ROUNDS.push({
+            name: 'Adding Set ' + (i + 1),
+            emoji: '\u{2795}',
+            description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_ADDING.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2024_ADDING[idx]]))(i)
         });
     }
 
@@ -1258,6 +1323,7 @@ function setupEventListeners() {
     $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
     $('btn-practice-2024-patterns').addEventListener('click', startPractice2024Patterns);
     $('btn-practice-2024-chain').addEventListener('click', startPractice2024Chain);
+    $('btn-practice-2024-adding').addEventListener('click', startPractice2024Adding);
     $('btn-begin-round').addEventListener('click', beginRound);
 
     // Practice round buttons
