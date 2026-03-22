@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Bowl - Grade 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="app">
+
+        <!-- Start Screen -->
+        <div id="screen-start" class="screen active">
+            <div class="card">
+                <h1 class="title">&#129518; Math Bowl</h1>
+                <p class="subtitle">Grade 1</p>
+                <div class="info-box">
+                    <p>&#10067; 10 Questions Each</p>
+                    <p>&#9201; 5 Seconds Per Question</p>
+                    <p>&#128264; Listen &amp; Answer!</p>
+                </div>
+                <button id="btn-start" class="btn btn-primary btn-large">Full Game (4 Rounds) &#128640;</button>
+                <div class="practice-section">
+                    <p class="practice-label">&#127919; Or practice a round:</p>
+                    <div class="practice-buttons">
+                        <button class="btn btn-practice" data-round="0">&#128290; Patterns</button>
+                        <button class="btn btn-practice" data-round="1">&#128279; Mental Math</button>
+                        <button class="btn btn-practice" data-round="2">&#10133; Addition</button>
+                        <button class="btn btn-practice" data-round="3">&#10134; Subtraction</button>
+                    </div>
+                </div>
+                <div class="upload-section">
+                    <p class="practice-label">&#128196; Or upload your own questions:</p>
+                    <label class="upload-area" id="upload-area">
+                        <input type="file" id="file-upload" accept=".xlsx,.xls,.csv" hidden>
+                        <span class="upload-icon">&#128202;</span>
+                        <span class="upload-text">Click to upload Excel or CSV</span>
+                    </label>
+                    <div id="upload-status" class="upload-status hidden"></div>
+                    <button id="btn-start-upload" class="btn btn-primary btn-large hidden">Play Uploaded Questions &#128202;</button>
+                    <div id="format-hint" class="pdf-format-hint">
+                        <strong>Excel Format:</strong> Two columns<br>
+                        Column A: <code>Question</code> &nbsp; Column B: <code>Answer</code><br>
+                        Example:<br>
+                        <code>2 + 3</code> &nbsp;|&nbsp; <code>5</code><br>
+                        <code>15 + 23</code> &nbsp;|&nbsp; <code>38</code><br>
+                        <code>1, 3, 5, 7, ?</code> &nbsp;|&nbsp; <code>9</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Round Intro Screen -->
+        <div id="screen-round-intro" class="screen">
+            <div class="card">
+                <div class="round-badge" id="round-badge">Round 1</div>
+                <h2 id="round-name" class="round-title"></h2>
+                <p id="round-description" class="round-desc"></p>
+                <div class="round-info">
+                    <span>10 questions</span> &bull; <span>5 seconds each</span>
+                </div>
+                <button id="btn-begin-round" class="btn btn-primary btn-large">Ready? Go! &#127919;</button>
+                <button class="btn-end-game" data-action="end-game">End Game</button>
+            </div>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="screen-question" class="screen">
+            <div class="game-container">
+                <div class="game-header">
+                    <span id="header-round" class="header-item">Round 1</span>
+                    <span id="header-question" class="header-item">Q 1/10</span>
+                    <span id="header-score" class="header-item">&#11088; 0</span>
+                    <button class="btn-end-game header-end" data-action="end-game">End</button>
+                </div>
+
+                <div id="timer-container" class="timer-container">
+                    <div id="timer-bar" class="timer-bar"></div>
+                    <span id="timer-text" class="timer-text">5</span>
+                </div>
+
+                <div id="question-text" class="question-text"></div>
+
+                <div id="input-section" class="input-section">
+                    <div class="input-row">
+                        <input type="text" id="answer-input" class="answer-input"
+                               inputmode="numeric" pattern="[0-9]*"
+                               placeholder="?" autocomplete="off" maxlength="3">
+                        <button id="btn-submit" class="btn btn-success btn-round" title="Submit">&#10003;</button>
+                    </div>
+
+                    <div id="numpad" class="numpad">
+                        <button class="numpad-btn" data-num="1">1</button>
+                        <button class="numpad-btn" data-num="2">2</button>
+                        <button class="numpad-btn" data-num="3">3</button>
+                        <button class="numpad-btn" data-num="4">4</button>
+                        <button class="numpad-btn" data-num="5">5</button>
+                        <button class="numpad-btn" data-num="6">6</button>
+                        <button class="numpad-btn" data-num="7">7</button>
+                        <button class="numpad-btn" data-num="8">8</button>
+                        <button class="numpad-btn" data-num="9">9</button>
+                        <button class="numpad-btn numpad-del" data-action="delete">&#9003;</button>
+                        <button class="numpad-btn" data-num="0">0</button>
+                        <button class="numpad-btn numpad-submit" data-action="submit">GO</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Feedback Screen -->
+        <div id="screen-feedback" class="screen">
+            <div class="card feedback-card">
+                <div id="feedback-icon" class="feedback-icon"></div>
+                <div id="feedback-text" class="feedback-text"></div>
+                <div id="feedback-answer" class="feedback-answer"></div>
+            </div>
+        </div>
+
+        <!-- Round Summary Screen -->
+        <div id="screen-round-summary" class="screen">
+            <div class="card">
+                <h2 id="summary-title" class="summary-title"></h2>
+                <div id="summary-score" class="summary-score"></div>
+                <div id="summary-details" class="summary-details"></div>
+                <button id="btn-next-round" class="btn btn-primary btn-large">Next Round &rarr;</button>
+                <button class="btn-end-game" data-action="end-game">End Game</button>
+            </div>
+        </div>
+
+        <!-- Final Score Screen -->
+        <div id="screen-final" class="screen">
+            <div class="card">
+                <h1 class="title">&#127942; Math Bowl Complete!</h1>
+                <div id="final-total" class="final-total"></div>
+                <div id="final-message" class="final-message"></div>
+                <div class="final-results-header">
+                    <span></span>
+                    <span>Question</span>
+                    <span>Answer</span>
+                    <span>Yours</span>
+                </div>
+                <div id="final-breakdown" class="final-breakdown"></div>
+                <button id="btn-restart" class="btn btn-primary btn-large">Play Again &#128260;</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
