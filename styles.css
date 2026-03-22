@@ -602,6 +602,12 @@ body {
     border-top: 2px solid var(--light-gray);
 }
 
+.full-game-section {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 2px solid var(--light-gray);
+}
+
 .practice-label {
     font-size: 1.05rem;
     font-weight: 600;
