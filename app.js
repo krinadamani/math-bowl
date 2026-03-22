@@ -3,6 +3,7 @@ let QUESTIONS_PER_ROUND = 10;
 const TIME_LIMIT = 10; // seconds
 const SPEECH_RATE = 0.85;
 const FEEDBACK_DELAY = 2500; // ms to show feedback before next question
+const FEEDBACK_DELAY_WRONG = 5000; // ms for wrong/timeout — more time to review
 
 // ==================== ROUND DEFINITIONS ====================
 const ROUNDS = [
@@ -473,6 +474,48 @@ const PRACTICE_2024_ADDING = [
     ]
 ];
 
+const PRACTICE_2024_BONUS = [
+    // Set 1
+    [
+        { display: 'N + 13 = 25', speech: 'N plus 13 equals 25. What is N?', answer: 12 },
+        { display: 'N \u2212 12 = 14', speech: 'N minus 12 equals 14. What is N?', answer: 26 },
+        { display: 'N + 11 = 19', speech: 'N plus 11 equals 19. What is N?', answer: 8 },
+        { display: 'N \u2212 10 = 14', speech: 'N minus 10 equals 14. What is N?', answer: 24 },
+        { display: 'N + 13 = 20', speech: 'N plus 13 equals 20. What is N?', answer: 7 },
+        { display: 'N \u2212 13 = 10', speech: 'N minus 13 equals 10. What is N?', answer: 23 },
+        { display: 'N + 7 = 11', speech: 'N plus 7 equals 11. What is N?', answer: 4 },
+        { display: 'N \u2212 5 = 12', speech: 'N minus 5 equals 12. What is N?', answer: 17 },
+        { display: 'N + 9 = 15', speech: 'N plus 9 equals 15. What is N?', answer: 6 },
+        { display: 'N \u2212 6 = 11', speech: 'N minus 6 equals 11. What is N?', answer: 17 }
+    ],
+    // Set 2
+    [
+        { display: 'N + 7 = 13', speech: 'N plus 7 equals 13. What is N?', answer: 6 },
+        { display: 'N \u2212 8 = 11', speech: 'N minus 8 equals 11. What is N?', answer: 19 },
+        { display: 'N + 3 = 9', speech: 'N plus 3 equals 9. What is N?', answer: 6 },
+        { display: 'N \u2212 4 = 8', speech: 'N minus 4 equals 8. What is N?', answer: 12 },
+        { display: 'N + 6 = 14', speech: 'N plus 6 equals 14. What is N?', answer: 8 },
+        { display: 'N + 17 = 29', speech: 'N plus 17 equals 29. What is N?', answer: 12 },
+        { display: 'N \u2212 13 = 15', speech: 'N minus 13 equals 15. What is N?', answer: 28 },
+        { display: 'N + 14 = 26', speech: 'N plus 14 equals 26. What is N?', answer: 12 },
+        { display: 'N \u2212 12 = 15', speech: 'N minus 12 equals 15. What is N?', answer: 27 },
+        { display: 'N + 14 = 26', speech: 'N plus 14 equals 26. What is N?', answer: 12 }
+    ],
+    // Set 3
+    [
+        { display: 'N \u2212 15 = 10', speech: 'N minus 15 equals 10. What is N?', answer: 25 },
+        { display: 'N + 8 = 12', speech: 'N plus 8 equals 12. What is N?', answer: 4 },
+        { display: 'N \u2212 3 = 14', speech: 'N minus 3 equals 14. What is N?', answer: 17 },
+        { display: 'N + 8 = 17', speech: 'N plus 8 equals 17. What is N?', answer: 9 },
+        { display: 'N \u2212 4 = 14', speech: 'N minus 4 equals 14. What is N?', answer: 18 },
+        { display: 'N + 8 = 19', speech: 'N plus 8 equals 19. What is N?', answer: 11 },
+        { display: 'N \u2212 3 = 12', speech: 'N minus 3 equals 12. What is N?', answer: 15 },
+        { display: 'N + 5 = 16', speech: 'N plus 5 equals 16. What is N?', answer: 11 },
+        { display: 'N + 6 = 18', speech: 'N plus 6 equals 18. What is N?', answer: 12 },
+        { display: 'N \u2212 5 = 13', speech: 'N minus 5 equals 13. What is N?', answer: 18 }
+    ]
+];
+
 // ==================== STATE ====================
 const state = {
     currentRound: 0,
@@ -901,6 +944,29 @@ function startPractice2024Adding() {
     showRoundIntro();
 }
 
+function startPractice2024Bonus() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2024_BONUS.length; i++) {
+        ROUNDS.push({
+            name: 'Find N Set ' + (i + 1),
+            emoji: '\u{1F9E9}',
+            description: '2024 Bonus \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_BONUS.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2024_BONUS[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
 function showRoundIntro() {
     const round = ROUNDS[state.currentRound];
     dom.roundBadge.textContent = 'Round ' + (state.currentRound + 1);
@@ -1048,6 +1114,7 @@ function showFeedback(type, correctAnswer, userAnswer) {
 
     showScreen('screen-feedback');
 
+    const delay = (type === 'correct') ? FEEDBACK_DELAY : FEEDBACK_DELAY_WRONG;
     setTimeout(() => {
         state.currentQuestion++;
         if (state.currentQuestion < QUESTIONS_PER_ROUND && state.currentQuestion < state.questions.length) {
@@ -1055,7 +1122,7 @@ function showFeedback(type, correctAnswer, userAnswer) {
         } else {
             showRoundSummary();
         }
-    }, FEEDBACK_DELAY);
+    }, delay);
 }
 
 function showRoundSummary() {
@@ -1324,6 +1391,7 @@ function setupEventListeners() {
     $('btn-practice-2024-patterns').addEventListener('click', startPractice2024Patterns);
     $('btn-practice-2024-chain').addEventListener('click', startPractice2024Chain);
     $('btn-practice-2024-adding').addEventListener('click', startPractice2024Adding);
+    $('btn-practice-2024-bonus').addEventListener('click', startPractice2024Bonus);
     $('btn-begin-round').addEventListener('click', beginRound);
 
     // Practice round buttons
