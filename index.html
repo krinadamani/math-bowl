@@ -7,8 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -35,28 +33,6 @@
                         <button class="btn btn-practice" data-round="1">&#128279; Mental Math</button>
                         <button class="btn btn-practice" data-round="2">&#10133; Addition</button>
                         <button class="btn btn-practice" data-round="3">&#10134; Subtraction</button>
-                    </div>
-                </div>
-                <div class="upload-section">
-                    <p class="practice-label">&#128196; Or upload your own questions:</p>
-                    <div class="upload-row">
-                        <label class="upload-area" id="upload-area">
-                            <input type="file" id="file-upload" accept=".xlsx,.xls,.csv" hidden>
-                            <span class="upload-icon">&#128202;</span>
-                            <span class="upload-text">Excel / CSV</span>
-                        </label>
-                        <label class="upload-area" id="upload-area-photo">
-                            <input type="file" id="photo-upload" accept="image/*" multiple hidden>
-                            <span class="upload-icon">&#128247;</span>
-                            <span class="upload-text">Photo(s)</span>
-                        </label>
-                    </div>
-                    <div id="upload-status" class="upload-status hidden"></div>
-                    <button id="btn-start-upload" class="btn btn-primary btn-large hidden">Play Uploaded Questions &#127919;</button>
-                    <div id="format-hint" class="pdf-format-hint">
-                        <strong>Excel:</strong> Column A = Question, Column B = Answer<br>
-                        <strong>Photo:</strong> Each line: <code>question = answer</code><br>
-                        Example: <code>2 + 3 = 5</code>
                     </div>
                 </div>
                 <div class="history-section">

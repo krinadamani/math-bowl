@@ -359,8 +359,7 @@ const state = {
     timerInterval: null,
     timerTimeout: null,
     timeLeft: TIME_LIMIT,
-    isAnswered: false,
-    pdfQuestions: []
+    isAnswered: false
 };
 
 // ==================== DOM REFERENCES ====================
@@ -562,114 +561,6 @@ function speak(text) {
     });
 }
 
-// ==================== EXCEL UPLOAD ====================
-
-function parseExcel(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                const questions = [];
-
-                for (const row of rows) {
-                    if (!row || row.length < 2) continue;
-                    const questionText = String(row[0]).trim();
-                    const answerVal = parseInt(String(row[1]).trim(), 10);
-
-                    if (!questionText || isNaN(answerVal)) continue;
-                    // Skip header row
-                    if (questionText.toLowerCase() === 'question') continue;
-
-                    const speech = questionText
-                        .replace(/\+/g, ' plus ')
-                        .replace(/\-|\u2212/g, ' minus ')
-                        .replace(/\*/g, ' times ')
-                        .replace(/\//g, ' divided by ')
-                        .replace(/,\s*\?/g, '')
-                        .replace(/\?/g, '')
-                        .replace(/,/g, ', ');
-
-                    questions.push({
-                        display: questionText + ' = ?',
-                        speech: speech,
-                        answer: answerVal
-                    });
-                }
-
-                resolve(questions);
-            } catch (err) {
-                reject(err);
-            }
-        };
-        reader.onerror = () => reject(reader.error);
-        reader.readAsArrayBuffer(file);
-    });
-}
-
-async function parseImage(file) {
-    const { data: { text } } = await Tesseract.recognize(file, 'eng');
-    return parseTextToQuestions(text);
-}
-
-function parseTextToQuestions(text) {
-    const questions = [];
-    const lines = text.split(/[\r\n]+/).map(l => l.trim()).filter(l => l.length > 0);
-
-    for (const line of lines) {
-        // Remove leading numbers like "1." or "1)" or "Q1:"
-        const cleaned = line.replace(/^\s*(?:Q?\d+[.):\-]\s*)/, '').trim();
-        if (!cleaned) continue;
-
-        // Try to find "= answer" at the end
-        const eqMatch = cleaned.match(/^(.+?)\s*=\s*(\-?\d+)\s*$/);
-        if (eqMatch) {
-            const questionPart = eqMatch[1].trim();
-            const answer = parseInt(eqMatch[2], 10);
-            const speech = questionPart
-                .replace(/\+/g, ' plus ')
-                .replace(/\-|\u2212/g, ' minus ')
-                .replace(/[x\u00d7\*]/gi, ' times ')
-                .replace(/[÷\/]/g, ' divided by ')
-                .replace(/,\s*\?/g, '')
-                .replace(/\?/g, '')
-                .replace(/,/g, ', ');
-
-            questions.push({
-                display: questionPart + ' = ?',
-                speech: speech,
-                answer: answer
-            });
-        }
-    }
-    return questions;
-}
-
-function startPdfGame() {
-    if (state.pdfQuestions.length === 0) return;
-    restoreRounds();
-
-    state.currentRound = 0;
-    state.practiceMode = true;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    // Override round 0 with uploaded questions
-    ROUNDS[0]._originalGenerator = ROUNDS[0].generator;
-    ROUNDS[0].generator = () => {
-        return [...state.pdfQuestions];
-    };
-    ROUNDS[0]._originalName = ROUNDS[0].name;
-    ROUNDS[0].name = 'Uploaded Questions';
-    ROUNDS[0]._originalDesc = ROUNDS[0].description;
-    ROUNDS[0].description = state.pdfQuestions.length + ' questions from your file';
-
-    showRoundIntro();
-}
-
 function restoreRounds() {
     QUESTIONS_PER_ROUND = 10;
 
@@ -685,15 +576,6 @@ function restoreRounds() {
         return;
     }
 
-    // Restore original round 0 if overridden by upload
-    if (ROUNDS[0]._originalGenerator) {
-        ROUNDS[0].generator = ROUNDS[0]._originalGenerator;
-        ROUNDS[0].name = ROUNDS[0]._originalName;
-        ROUNDS[0].description = ROUNDS[0]._originalDesc;
-        delete ROUNDS[0]._originalGenerator;
-        delete ROUNDS[0]._originalName;
-        delete ROUNDS[0]._originalDesc;
-    }
     // Restore all rounds if overridden by study sheet
     for (let i = 0; i < 4; i++) {
         if (ROUNDS[i]._ssGenerator) {
@@ -1282,74 +1164,6 @@ function setupEventListeners() {
     // End Game buttons (multiple across screens)
     document.querySelectorAll('[data-action="end-game"]').forEach(btn => {
         btn.addEventListener('click', endGame);
-    });
-
-    // Excel Upload
-    $('file-upload').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const statusEl = $('upload-status');
-        const btnUpload = $('btn-start-upload');
-        statusEl.classList.remove('hidden');
-        statusEl.className = 'upload-status';
-        statusEl.textContent = 'Reading file...';
-        btnUpload.classList.add('hidden');
-
-        try {
-            const questions = await parseExcel(file);
-            if (questions.length === 0) {
-                statusEl.className = 'upload-status upload-error';
-                statusEl.textContent = 'No questions found. Use Column A for question, Column B for answer.';
-            } else {
-                state.pdfQuestions = questions;
-                statusEl.className = 'upload-status upload-success';
-                statusEl.textContent = '\u2705 Found ' + questions.length + ' questions from "' + file.name + '"';
-                btnUpload.classList.remove('hidden');
-            }
-        } catch (err) {
-            statusEl.className = 'upload-status upload-error';
-            statusEl.textContent = '\u274C Error reading file. Please try another.';
-        }
-    });
-
-    $('btn-start-upload').addEventListener('click', startPdfGame);
-
-    // Photo Upload (OCR) — supports multiple images
-    $('photo-upload').addEventListener('change', async (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        const statusEl = $('upload-status');
-        const btnUpload = $('btn-start-upload');
-        statusEl.classList.remove('hidden');
-        statusEl.className = 'upload-status';
-        btnUpload.classList.add('hidden');
-
-        const allQuestions = [];
-        try {
-            for (let i = 0; i < files.length; i++) {
-                statusEl.textContent = '\u{1F50D} Reading image ' + (i + 1) + ' of ' + files.length + '...';
-                const questions = await parseImage(files[i]);
-                allQuestions.push(...questions);
-            }
-
-            if (allQuestions.length === 0) {
-                statusEl.className = 'upload-status upload-error';
-                statusEl.textContent = 'No questions found. Each line needs: question = answer';
-            } else {
-                state.pdfQuestions = allQuestions;
-                statusEl.className = 'upload-status upload-success';
-                statusEl.textContent = '\u2705 Found ' + allQuestions.length + ' questions from ' + files.length + ' image' + (files.length > 1 ? 's' : '');
-                btnUpload.classList.remove('hidden');
-            }
-        } catch (err) {
-            statusEl.className = 'upload-status upload-error';
-            statusEl.textContent = '\u274C Error reading image. Try a clearer photo.';
-        }
-
-        // Reset input so same files can be re-uploaded
-        e.target.value = '';
     });
 }
 
