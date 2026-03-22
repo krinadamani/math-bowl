@@ -1,6 +1,6 @@
 // ==================== CONFIGURATION ====================
-const QUESTIONS_PER_ROUND = 10;
-const TIME_LIMIT = 5; // seconds
+let QUESTIONS_PER_ROUND = 10;
+const TIME_LIMIT = 10; // seconds
 const SPEECH_RATE = 0.85;
 const FEEDBACK_DELAY = 2500; // ms to show feedback before next question
 
@@ -32,11 +32,326 @@ const ROUNDS = [
     }
 ];
 
+// ==================== 2025 STUDY SHEET ====================
+const STUDY_SHEET_2025 = {
+    patterns: [
+        { display: '30, 26, 22, 18, ?', speech: 'What comes next? 30, 26, 22, 18', answer: 14 },
+        { display: '2, 3, 5, 8, ?', speech: 'What comes next? 2, 3, 5, 8', answer: 12 },
+        { display: '9, 18, 27, 36, ?', speech: 'What comes next? 9, 18, 27, 36', answer: 45 },
+        { display: '100, 95, 90, 85, ?', speech: 'What comes next? 100, 95, 90, 85', answer: 80 },
+        { display: '0, 3, 6, 9, ?', speech: 'What comes next? 0, 3, 6, 9', answer: 12 },
+        { display: '13, 16, 19, 22, ?', speech: 'What comes next? 13, 16, 19, 22', answer: 25 },
+        { display: '80, 75, 70, 65, ?', speech: 'What comes next? 80, 75, 70, 65', answer: 60 },
+        { display: '40, 37, 34, 31, ?', speech: 'What comes next? 40, 37, 34, 31', answer: 28 },
+        { display: '80, 70, 60, 50, ?', speech: 'What comes next? 80, 70, 60, 50', answer: 40 },
+        { display: '95, 89, 83, 77, ?', speech: 'What comes next? 95, 89, 83, 77', answer: 71 },
+        { display: '0, 6, 12, 18, ?', speech: 'What comes next? 0, 6, 12, 18', answer: 24 },
+        { display: '36, 30, 24, 18, ?', speech: 'What comes next? 36, 30, 24, 18', answer: 12 },
+        { display: '0, 8, 16, 24, ?', speech: 'What comes next? 0, 8, 16, 24', answer: 32 },
+        { display: '2, 4, 6, 8, ?', speech: 'What comes next? 2, 4, 6, 8', answer: 10 },
+        { display: '62, 65, 68, 71, ?', speech: 'What comes next? 62, 65, 68, 71', answer: 74 }
+    ],
+    chain: [
+        { display: '3 + 8 \u2212 5 + 9 = ?', speech: '3 plus 8 minus 5 plus 9', answer: 15 },
+        { display: '6 + 4 + 7 \u2212 3 = ?', speech: '6 plus 4 plus 7 minus 3', answer: 14 },
+        { display: '8 + 9 \u2212 6 \u2212 2 = ?', speech: '8 plus 9 minus 6 minus 2', answer: 9 },
+        { display: '9 + 7 \u2212 3 + 4 = ?', speech: '9 plus 7 minus 3 plus 4', answer: 17 },
+        { display: '8 + 7 + 8 \u2212 3 = ?', speech: '8 plus 7 plus 8 minus 3', answer: 20 },
+        { display: '9 \u2212 3 + 5 \u2212 2 = ?', speech: '9 minus 3 plus 5 minus 2', answer: 9 },
+        { display: '7 + 7 \u2212 3 \u2212 4 = ?', speech: '7 plus 7 minus 3 minus 4', answer: 7 },
+        { display: '7 \u2212 5 + 9 + 3 = ?', speech: '7 minus 5 plus 9 plus 3', answer: 14 },
+        { display: '8 \u2212 5 + 7 \u2212 1 = ?', speech: '8 minus 5 plus 7 minus 1', answer: 9 },
+        { display: '9 + 8 \u2212 2 + 6 = ?', speech: '9 plus 8 minus 2 plus 6', answer: 21 },
+        { display: '8 \u2212 3 + 8 + 9 = ?', speech: '8 minus 3 plus 8 plus 9', answer: 22 },
+        { display: '8 + 5 + 9 \u2212 4 = ?', speech: '8 plus 5 plus 9 minus 4', answer: 18 },
+        { display: '5 + 8 + 5 \u2212 2 = ?', speech: '5 plus 8 plus 5 minus 2', answer: 16 },
+        { display: '8 + 9 \u2212 4 \u2212 3 = ?', speech: '8 plus 9 minus 4 minus 3', answer: 10 },
+        { display: '9 \u2212 3 + 5 + 4 = ?', speech: '9 minus 3 plus 5 plus 4', answer: 15 }
+    ],
+    addition: [
+        { display: '63 + 22 = ?', speech: '63 plus 22', answer: 85 },
+        { display: '53 + 25 = ?', speech: '53 plus 25', answer: 78 },
+        { display: '35 + 32 = ?', speech: '35 plus 32', answer: 67 },
+        { display: '35 + 24 = ?', speech: '35 plus 24', answer: 59 },
+        { display: '38 + 41 = ?', speech: '38 plus 41', answer: 79 },
+        { display: '52 + 36 = ?', speech: '52 plus 36', answer: 88 },
+        { display: '84 + 15 = ?', speech: '84 plus 15', answer: 99 },
+        { display: '53 + 24 = ?', speech: '53 plus 24', answer: 77 },
+        { display: '52 + 37 = ?', speech: '52 plus 37', answer: 89 },
+        { display: '62 + 15 = ?', speech: '62 plus 15', answer: 77 },
+        { display: '47 + 52 = ?', speech: '47 plus 52', answer: 99 },
+        { display: '34 + 55 = ?', speech: '34 plus 55', answer: 89 },
+        { display: '41 + 26 = ?', speech: '41 plus 26', answer: 67 },
+        { display: '32 + 16 = ?', speech: '32 plus 16', answer: 48 },
+        { display: '32 + 43 = ?', speech: '32 plus 43', answer: 75 }
+    ],
+    subtraction: [
+        { display: '67 \u2212 44 = ?', speech: '67 minus 44', answer: 23 },
+        { display: '67 \u2212 41 = ?', speech: '67 minus 41', answer: 26 },
+        { display: '94 \u2212 42 = ?', speech: '94 minus 42', answer: 52 },
+        { display: '97 \u2212 54 = ?', speech: '97 minus 54', answer: 43 },
+        { display: '92 \u2212 50 = ?', speech: '92 minus 50', answer: 42 },
+        { display: '85 \u2212 32 = ?', speech: '85 minus 32', answer: 53 },
+        { display: '64 \u2212 33 = ?', speech: '64 minus 33', answer: 31 },
+        { display: '84 \u2212 43 = ?', speech: '84 minus 43', answer: 41 },
+        { display: '66 \u2212 45 = ?', speech: '66 minus 45', answer: 21 },
+        { display: '56 \u2212 24 = ?', speech: '56 minus 24', answer: 32 },
+        { display: '48 \u2212 33 = ?', speech: '48 minus 33', answer: 15 },
+        { display: '78 \u2212 46 = ?', speech: '78 minus 46', answer: 32 },
+        { display: '78 \u2212 15 = ?', speech: '78 minus 15', answer: 63 },
+        { display: '47 \u2212 13 = ?', speech: '47 minus 13', answer: 34 },
+        { display: '84 \u2212 33 = ?', speech: '84 minus 33', answer: 51 }
+    ]
+};
+
+// ==================== 2020 PRACTICE PATTERNS ====================
+const PRACTICE_2020_PATTERNS = [
+    // Set 1
+    [
+        { display: '54, 45, 36, 27, ?', speech: 'What comes next? 54, 45, 36, 27', answer: 18 },
+        { display: '22, 19, 16, 13, ?', speech: 'What comes next? 22, 19, 16, 13', answer: 10 },
+        { display: '78, 68, 58, 48, ?', speech: 'What comes next? 78, 68, 58, 48', answer: 38 },
+        { display: '0, 8, 16, 24, ?', speech: 'What comes next? 0, 8, 16, 24', answer: 32 },
+        { display: '95, 90, 85, 80, ?', speech: 'What comes next? 95, 90, 85, 80', answer: 75 },
+        { display: '22, 33, 44, 55, ?', speech: 'What comes next? 22, 33, 44, 55', answer: 66 },
+        { display: '20, 24, 28, 32, ?', speech: 'What comes next? 20, 24, 28, 32', answer: 36 },
+        { display: '49, 42, 35, 28, ?', speech: 'What comes next? 49, 42, 35, 28', answer: 21 },
+        { display: '98, 92, 86, 80, ?', speech: 'What comes next? 98, 92, 86, 80', answer: 74 },
+        { display: '0, 7, 14, 21, ?', speech: 'What comes next? 0, 7, 14, 21', answer: 28 }
+    ],
+    // Set 2
+    [
+        { display: '55, 44, 33, 22, ?', speech: 'What comes next? 55, 44, 33, 22', answer: 11 },
+        { display: '11, 17, 23, 29, ?', speech: 'What comes next? 11, 17, 23, 29', answer: 35 },
+        { display: '0, 8, 16, 24, ?', speech: 'What comes next? 0, 8, 16, 24', answer: 32 },
+        { display: '17, 22, 27, 32, ?', speech: 'What comes next? 17, 22, 27, 32', answer: 37 },
+        { display: '90, 86, 82, 78, ?', speech: 'What comes next? 90, 86, 82, 78', answer: 74 },
+        { display: '7, 10, 13, 16, ?', speech: 'What comes next? 7, 10, 13, 16', answer: 19 },
+        { display: '29, 33, 37, 41, ?', speech: 'What comes next? 29, 33, 37, 41', answer: 45 },
+        { display: '5, 25, 45, 65, ?', speech: 'What comes next? 5, 25, 45, 65', answer: 85 },
+        { display: '0, 9, 18, 27, ?', speech: 'What comes next? 0, 9, 18, 27', answer: 36 },
+        { display: '65, 60, 55, 50, ?', speech: 'What comes next? 65, 60, 55, 50', answer: 45 }
+    ],
+    // Set 3
+    [
+        { display: '40, 35, 30, 25, ?', speech: 'What comes next? 40, 35, 30, 25', answer: 20 },
+        { display: '100, 80, 60, 40, ?', speech: 'What comes next? 100, 80, 60, 40', answer: 20 },
+        { display: '77, 66, 55, 44, ?', speech: 'What comes next? 77, 66, 55, 44', answer: 33 },
+        { display: '86, 80, 74, 68, ?', speech: 'What comes next? 86, 80, 74, 68', answer: 62 },
+        { display: '55, 45, 35, 25, ?', speech: 'What comes next? 55, 45, 35, 25', answer: 15 },
+        { display: '99, 92, 85, 78, ?', speech: 'What comes next? 99, 92, 85, 78', answer: 71 },
+        { display: '33, 44, 55, 66, ?', speech: 'What comes next? 33, 44, 55, 66', answer: 77 },
+        { display: '75, 70, 65, 60, ?', speech: 'What comes next? 75, 70, 65, 60', answer: 55 },
+        { display: '75, 80, 85, 90, ?', speech: 'What comes next? 75, 80, 85, 90', answer: 95 },
+        { display: '23, 27, 31, 35, ?', speech: 'What comes next? 23, 27, 31, 35', answer: 39 }
+    ],
+    // Set 4
+    [
+        { display: '40, 30, 20, 10, ?', speech: 'What comes next? 40, 30, 20, 10', answer: 0 },
+        { display: '16, 21, 26, 31, ?', speech: 'What comes next? 16, 21, 26, 31', answer: 36 },
+        { display: '0, 9, 18, 27, ?', speech: 'What comes next? 0, 9, 18, 27', answer: 36 },
+        { display: '15, 18, 21, 24, ?', speech: 'What comes next? 15, 18, 21, 24', answer: 27 },
+        { display: '39, 35, 31, 27, ?', speech: 'What comes next? 39, 35, 31, 27', answer: 23 },
+        { display: '18, 24, 30, 36, ?', speech: 'What comes next? 18, 24, 30, 36', answer: 42 },
+        { display: '70, 66, 62, 58, ?', speech: 'What comes next? 70, 66, 62, 58', answer: 54 },
+        { display: '27, 37, 47, 57, ?', speech: 'What comes next? 27, 37, 47, 57', answer: 67 },
+        { display: '94, 74, 54, 34, ?', speech: 'What comes next? 94, 74, 54, 34', answer: 14 },
+        { display: '44, 34, 24, 14, ?', speech: 'What comes next? 44, 34, 24, 14', answer: 4 }
+    ],
+    // Set 5
+    [
+        { display: '7, 13, 19, 25, ?', speech: 'What comes next? 7, 13, 19, 25', answer: 31 },
+        { display: '17, 26, 35, 44, ?', speech: 'What comes next? 17, 26, 35, 44', answer: 53 },
+        { display: '89, 78, 67, 56, ?', speech: 'What comes next? 89, 78, 67, 56', answer: 45 },
+        { display: '15, 25, 35, 45, ?', speech: 'What comes next? 15, 25, 35, 45', answer: 55 },
+        { display: '25, 31, 37, 43, ?', speech: 'What comes next? 25, 31, 37, 43', answer: 49 },
+        { display: '50, 54, 58, 62, ?', speech: 'What comes next? 50, 54, 58, 62', answer: 66 },
+        { display: '91, 86, 81, 76, ?', speech: 'What comes next? 91, 86, 81, 76', answer: 71 },
+        { display: '58, 68, 78, 88, ?', speech: 'What comes next? 58, 68, 78, 88', answer: 98 },
+        { display: '37, 48, 59, 70, ?', speech: 'What comes next? 37, 48, 59, 70', answer: 81 },
+        { display: '22, 33, 44, 55, ?', speech: 'What comes next? 22, 33, 44, 55', answer: 66 }
+    ],
+    // Set 6
+    [
+        { display: '16, 24, 32, 40, ?', speech: 'What comes next? 16, 24, 32, 40', answer: 48 },
+        { display: '16, 14, 12, 10, ?', speech: 'What comes next? 16, 14, 12, 10', answer: 8 },
+        { display: '37, 43, 49, 55, ?', speech: 'What comes next? 37, 43, 49, 55', answer: 61 },
+        { display: '65, 60, 55, 50, ?', speech: 'What comes next? 65, 60, 55, 50', answer: 45 },
+        { display: '94, 90, 86, 82, ?', speech: 'What comes next? 94, 90, 86, 82', answer: 78 },
+        { display: '88, 83, 78, 73, ?', speech: 'What comes next? 88, 83, 78, 73', answer: 68 },
+        { display: '42, 39, 36, 33, ?', speech: 'What comes next? 42, 39, 36, 33', answer: 30 },
+        { display: '10, 25, 40, 55, ?', speech: 'What comes next? 10, 25, 40, 55', answer: 70 },
+        { display: '51, 54, 57, 60, ?', speech: 'What comes next? 51, 54, 57, 60', answer: 63 },
+        { display: '44, 40, 36, 32, ?', speech: 'What comes next? 44, 40, 36, 32', answer: 28 }
+    ]
+];
+
+// ==================== 2020 PRACTICE CHAIN ====================
+const PRACTICE_2020_CHAIN = [
+    // Set 1
+    [
+        { display: '9 + 6 \u2212 7 + 3 = ?', speech: '9 plus 6 minus 7 plus 3', answer: 11 },
+        { display: '8 + 7 \u2212 3 + 9 = ?', speech: '8 plus 7 minus 3 plus 9', answer: 21 },
+        { display: '7 + 4 \u2212 5 + 3 = ?', speech: '7 plus 4 minus 5 plus 3', answer: 9 },
+        { display: '7 + 9 \u2212 6 + 5 = ?', speech: '7 plus 9 minus 6 plus 5', answer: 15 },
+        { display: '9 + 6 \u2212 5 + 4 = ?', speech: '9 plus 6 minus 5 plus 4', answer: 14 },
+        { display: '8 + 7 \u2212 5 + 7 = ?', speech: '8 plus 7 minus 5 plus 7', answer: 17 },
+        { display: '6 + 5 \u2212 4 + 7 = ?', speech: '6 plus 5 minus 4 plus 7', answer: 14 },
+        { display: '8 + 7 \u2212 5 + 7 = ?', speech: '8 plus 7 minus 5 plus 7', answer: 17 },
+        { display: '9 + 5 \u2212 4 + 8 = ?', speech: '9 plus 5 minus 4 plus 8', answer: 18 },
+        { display: '7 + 4 \u2212 5 + 8 = ?', speech: '7 plus 4 minus 5 plus 8', answer: 14 }
+    ],
+    // Set 2
+    [
+        { display: '8 + 5 \u2212 9 + 4 = ?', speech: '8 plus 5 minus 9 plus 4', answer: 8 },
+        { display: '5 + 9 \u2212 5 + 7 = ?', speech: '5 plus 9 minus 5 plus 7', answer: 16 },
+        { display: '5 + 4 \u2212 7 + 7 = ?', speech: '5 plus 4 minus 7 plus 7', answer: 9 },
+        { display: '7 + 8 \u2212 6 + 5 = ?', speech: '7 plus 8 minus 6 plus 5', answer: 14 },
+        { display: '8 + 4 \u2212 8 + 5 = ?', speech: '8 plus 4 minus 8 plus 5', answer: 9 },
+        { display: '8 + 7 \u2212 5 + 6 = ?', speech: '8 plus 7 minus 5 plus 6', answer: 16 },
+        { display: '9 + 8 \u2212 6 + 4 = ?', speech: '9 plus 8 minus 6 plus 4', answer: 15 },
+        { display: '7 + 7 \u2212 6 + 9 = ?', speech: '7 plus 7 minus 6 plus 9', answer: 17 },
+        { display: '9 + 5 \u2212 6 + 9 = ?', speech: '9 plus 5 minus 6 plus 9', answer: 17 },
+        { display: '8 + 9 \u2212 5 + 3 = ?', speech: '8 plus 9 minus 5 plus 3', answer: 15 }
+    ],
+    // Set 3
+    [
+        { display: '5 + 8 \u2212 6 + 6 = ?', speech: '5 plus 8 minus 6 plus 6', answer: 13 },
+        { display: '8 + 7 \u2212 4 + 8 = ?', speech: '8 plus 7 minus 4 plus 8', answer: 19 },
+        { display: '8 + 7 \u2212 4 + 3 = ?', speech: '8 plus 7 minus 4 plus 3', answer: 14 },
+        { display: '7 + 3 \u2212 8 + 4 = ?', speech: '7 plus 3 minus 8 plus 4', answer: 6 },
+        { display: '5 + 8 \u2212 6 + 3 = ?', speech: '5 plus 8 minus 6 plus 3', answer: 10 },
+        { display: '7 + 6 \u2212 8 + 5 = ?', speech: '7 plus 6 minus 8 plus 5', answer: 10 },
+        { display: '6 + 5 \u2212 3 + 7 = ?', speech: '6 plus 5 minus 3 plus 7', answer: 15 },
+        { display: '9 + 5 \u2212 8 + 4 = ?', speech: '9 plus 5 minus 8 plus 4', answer: 10 },
+        { display: '8 + 7 \u2212 5 + 3 = ?', speech: '8 plus 7 minus 5 plus 3', answer: 13 },
+        { display: '8 + 6 \u2212 7 + 5 = ?', speech: '8 plus 6 minus 7 plus 5', answer: 12 }
+    ],
+    // Set 4
+    [
+        { display: '8 + 7 \u2212 5 + 9 = ?', speech: '8 plus 7 minus 5 plus 9', answer: 19 },
+        { display: '9 + 6 \u2212 8 + 4 = ?', speech: '9 plus 6 minus 8 plus 4', answer: 11 },
+        { display: '9 + 4 \u2212 8 + 6 = ?', speech: '9 plus 4 minus 8 plus 6', answer: 11 },
+        { display: '8 + 6 \u2212 4 + 7 = ?', speech: '8 plus 6 minus 4 plus 7', answer: 17 },
+        { display: '5 + 8 \u2212 7 + 8 = ?', speech: '5 plus 8 minus 7 plus 8', answer: 14 },
+        { display: '8 + 6 \u2212 3 + 7 = ?', speech: '8 plus 6 minus 3 plus 7', answer: 18 },
+        { display: '6 + 4 \u2212 7 + 5 = ?', speech: '6 plus 4 minus 7 plus 5', answer: 8 },
+        { display: '6 + 7 \u2212 4 + 9 = ?', speech: '6 plus 7 minus 4 plus 9', answer: 18 },
+        { display: '9 + 5 \u2212 4 + 8 = ?', speech: '9 plus 5 minus 4 plus 8', answer: 18 },
+        { display: '3 + 7 \u2212 6 + 9 = ?', speech: '3 plus 7 minus 6 plus 9', answer: 13 }
+    ],
+    // Set 5
+    [
+        { display: '9 + 8 \u2212 5 + 8 = ?', speech: '9 plus 8 minus 5 plus 8', answer: 20 },
+        { display: '7 + 6 \u2212 8 + 2 = ?', speech: '7 plus 6 minus 8 plus 2', answer: 7 },
+        { display: '7 + 5 \u2212 8 + 7 = ?', speech: '7 plus 5 minus 8 plus 7', answer: 11 },
+        { display: '7 + 5 \u2212 6 + 6 = ?', speech: '7 plus 5 minus 6 plus 6', answer: 12 },
+        { display: '8 + 2 \u2212 5 + 9 = ?', speech: '8 plus 2 minus 5 plus 9', answer: 14 },
+        { display: '9 + 4 \u2212 8 + 5 = ?', speech: '9 plus 4 minus 8 plus 5', answer: 10 },
+        { display: '9 + 3 \u2212 7 + 5 = ?', speech: '9 plus 3 minus 7 plus 5', answer: 10 },
+        { display: '6 + 7 \u2212 6 + 3 = ?', speech: '6 plus 7 minus 6 plus 3', answer: 10 },
+        { display: '7 + 9 \u2212 5 + 6 = ?', speech: '7 plus 9 minus 5 plus 6', answer: 17 },
+        { display: '7 + 6 \u2212 9 + 4 = ?', speech: '7 plus 6 minus 9 plus 4', answer: 8 }
+    ],
+    // Set 6
+    [
+        { display: '9 + 5 \u2212 7 + 8 = ?', speech: '9 plus 5 minus 7 plus 8', answer: 15 },
+        { display: '6 + 9 \u2212 6 + 8 = ?', speech: '6 plus 9 minus 6 plus 8', answer: 17 },
+        { display: '8 + 5 \u2212 7 + 8 = ?', speech: '8 plus 5 minus 7 plus 8', answer: 14 },
+        { display: '8 + 5 \u2212 6 + 4 = ?', speech: '8 plus 5 minus 6 plus 4', answer: 11 },
+        { display: '4 + 8 \u2212 9 + 7 = ?', speech: '4 plus 8 minus 9 plus 7', answer: 10 },
+        { display: '9 + 2 \u2212 8 + 6 = ?', speech: '9 plus 2 minus 8 plus 6', answer: 9 }
+    ]
+];
+
+// ==================== 2020 PRACTICE ADDING ====================
+const PRACTICE_2020_ADDING = [
+    // Set 1
+    [
+        { display: '4 + 5 + 8 + 10 = ?', speech: '4 plus 5 plus 8 plus 10', answer: 27 },
+        { display: '9 + 6 + 5 + 10 = ?', speech: '9 plus 6 plus 5 plus 10', answer: 30 },
+        { display: '4 + 5 + 7 + 10 = ?', speech: '4 plus 5 plus 7 plus 10', answer: 26 },
+        { display: '6 + 9 + 7 + 10 = ?', speech: '6 plus 9 plus 7 plus 10', answer: 32 },
+        { display: '4 + 7 + 9 + 10 = ?', speech: '4 plus 7 plus 9 plus 10', answer: 30 },
+        { display: '8 + 6 + 9 + 10 = ?', speech: '8 plus 6 plus 9 plus 10', answer: 33 },
+        { display: '5 + 8 + 4 + 10 = ?', speech: '5 plus 8 plus 4 plus 10', answer: 27 },
+        { display: '6 + 3 + 8 + 10 = ?', speech: '6 plus 3 plus 8 plus 10', answer: 27 },
+        { display: '7 + 4 + 8 + 10 = ?', speech: '7 plus 4 plus 8 plus 10', answer: 29 },
+        { display: '6 + 8 + 9 + 10 = ?', speech: '6 plus 8 plus 9 plus 10', answer: 33 }
+    ],
+    // Set 2
+    [
+        { display: '5 + 9 + 7 + 10 = ?', speech: '5 plus 9 plus 7 plus 10', answer: 31 },
+        { display: '9 + 5 + 4 + 10 = ?', speech: '9 plus 5 plus 4 plus 10', answer: 28 },
+        { display: '6 + 9 + 5 + 10 = ?', speech: '6 plus 9 plus 5 plus 10', answer: 30 },
+        { display: '7 + 5 + 6 + 10 = ?', speech: '7 plus 5 plus 6 plus 10', answer: 28 },
+        { display: '4 + 9 + 6 + 10 = ?', speech: '4 plus 9 plus 6 plus 10', answer: 29 },
+        { display: '7 + 5 + 8 + 10 = ?', speech: '7 plus 5 plus 8 plus 10', answer: 30 },
+        { display: '8 + 7 + 9 + 10 = ?', speech: '8 plus 7 plus 9 plus 10', answer: 34 },
+        { display: '8 + 5 + 7 + 10 = ?', speech: '8 plus 5 plus 7 plus 10', answer: 30 },
+        { display: '8 + 3 + 7 + 10 = ?', speech: '8 plus 3 plus 7 plus 10', answer: 28 },
+        { display: '4 + 6 + 8 + 10 = ?', speech: '4 plus 6 plus 8 plus 10', answer: 28 }
+    ],
+    // Set 3
+    [
+        { display: '9 + 6 + 5 + 10 = ?', speech: '9 plus 6 plus 5 plus 10', answer: 30 },
+        { display: '7 + 5 + 6 + 10 = ?', speech: '7 plus 5 plus 6 plus 10', answer: 28 },
+        { display: '7 + 8 + 4 + 10 = ?', speech: '7 plus 8 plus 4 plus 10', answer: 29 },
+        { display: '8 + 4 + 7 + 10 = ?', speech: '8 plus 4 plus 7 plus 10', answer: 29 },
+        { display: '8 + 7 + 9 + 10 = ?', speech: '8 plus 7 plus 9 plus 10', answer: 34 },
+        { display: '9 + 5 + 8 + 10 = ?', speech: '9 plus 5 plus 8 plus 10', answer: 32 },
+        { display: '7 + 8 + 5 + 10 = ?', speech: '7 plus 8 plus 5 plus 10', answer: 30 },
+        { display: '3 + 9 + 4 + 10 = ?', speech: '3 plus 9 plus 4 plus 10', answer: 26 },
+        { display: '6 + 5 + 7 + 10 = ?', speech: '6 plus 5 plus 7 plus 10', answer: 28 },
+        { display: '8 + 7 + 5 + 10 = ?', speech: '8 plus 7 plus 5 plus 10', answer: 30 }
+    ],
+    // Set 4
+    [
+        { display: '8 + 7 + 6 + 10 = ?', speech: '8 plus 7 plus 6 plus 10', answer: 31 },
+        { display: '6 + 9 + 3 + 10 = ?', speech: '6 plus 9 plus 3 plus 10', answer: 28 },
+        { display: '4 + 8 + 7 + 10 = ?', speech: '4 plus 8 plus 7 plus 10', answer: 29 },
+        { display: '7 + 4 + 5 + 10 = ?', speech: '7 plus 4 plus 5 plus 10', answer: 26 },
+        { display: '4 + 7 + 8 + 10 = ?', speech: '4 plus 7 plus 8 plus 10', answer: 29 },
+        { display: '8 + 7 + 5 + 10 = ?', speech: '8 plus 7 plus 5 plus 10', answer: 30 },
+        { display: '8 + 7 + 6 + 10 = ?', speech: '8 plus 7 plus 6 plus 10', answer: 31 },
+        { display: '5 + 8 + 7 + 10 = ?', speech: '5 plus 8 plus 7 plus 10', answer: 30 },
+        { display: '7 + 4 + 9 + 10 = ?', speech: '7 plus 4 plus 9 plus 10', answer: 30 },
+        { display: '9 + 7 + 8 + 10 = ?', speech: '9 plus 7 plus 8 plus 10', answer: 34 }
+    ],
+    // Set 5
+    [
+        { display: '5 + 8 + 6 + 10 = ?', speech: '5 plus 8 plus 6 plus 10', answer: 29 },
+        { display: '9 + 6 + 5 + 10 = ?', speech: '9 plus 6 plus 5 plus 10', answer: 30 },
+        { display: '6 + 8 + 5 + 10 = ?', speech: '6 plus 8 plus 5 plus 10', answer: 29 },
+        { display: '8 + 9 + 4 + 10 = ?', speech: '8 plus 9 plus 4 plus 10', answer: 31 },
+        { display: '4 + 9 + 7 + 10 = ?', speech: '4 plus 9 plus 7 plus 10', answer: 30 },
+        { display: '4 + 8 + 7 + 10 = ?', speech: '4 plus 8 plus 7 plus 10', answer: 29 },
+        { display: '8 + 6 + 7 + 10 = ?', speech: '8 plus 6 plus 7 plus 10', answer: 31 },
+        { display: '6 + 7 + 3 + 10 = ?', speech: '6 plus 7 plus 3 plus 10', answer: 26 },
+        { display: '9 + 6 + 5 + 10 = ?', speech: '9 plus 6 plus 5 plus 10', answer: 30 },
+        { display: '4 + 9 + 8 + 10 = ?', speech: '4 plus 9 plus 8 plus 10', answer: 31 }
+    ],
+    // Set 6
+    [
+        { display: '8 + 5 + 9 + 10 = ?', speech: '8 plus 5 plus 9 plus 10', answer: 32 },
+        { display: '5 + 4 + 8 + 10 = ?', speech: '5 plus 4 plus 8 plus 10', answer: 27 },
+        { display: '3 + 8 + 5 + 10 = ?', speech: '3 plus 8 plus 5 plus 10', answer: 26 },
+        { display: '7 + 6 + 5 + 10 = ?', speech: '7 plus 6 plus 5 plus 10', answer: 28 },
+        { display: '3 + 7 + 9 + 10 = ?', speech: '3 plus 7 plus 9 plus 10', answer: 29 },
+        { display: '9 + 6 + 7 + 10 = ?', speech: '9 plus 6 plus 7 plus 10', answer: 32 },
+        { display: '5 + 7 + 6 + 10 = ?', speech: '5 plus 7 plus 6 plus 10', answer: 28 },
+        { display: '8 + 5 + 9 + 10 = ?', speech: '8 plus 5 plus 9 plus 10', answer: 32 },
+        { display: '8 + 5 + 8 + 10 = ?', speech: '8 plus 5 plus 8 plus 10', answer: 31 },
+        { display: '9 + 4 + 6 + 10 = ?', speech: '9 plus 4 plus 6 plus 10', answer: 29 }
+    ]
+];
+
 // ==================== STATE ====================
 const state = {
     currentRound: 0,
     currentQuestion: 0,
     practiceMode: false,
+    studySheetMode: false,
     scores: [0, 0, 0, 0],
     questions: [],
     results: [],
@@ -295,13 +610,52 @@ function parseExcel(file) {
     });
 }
 
+async function parseImage(file) {
+    const { data: { text } } = await Tesseract.recognize(file, 'eng');
+    return parseTextToQuestions(text);
+}
+
+function parseTextToQuestions(text) {
+    const questions = [];
+    const lines = text.split(/[\r\n]+/).map(l => l.trim()).filter(l => l.length > 0);
+
+    for (const line of lines) {
+        // Remove leading numbers like "1." or "1)" or "Q1:"
+        const cleaned = line.replace(/^\s*(?:Q?\d+[.):\-]\s*)/, '').trim();
+        if (!cleaned) continue;
+
+        // Try to find "= answer" at the end
+        const eqMatch = cleaned.match(/^(.+?)\s*=\s*(\-?\d+)\s*$/);
+        if (eqMatch) {
+            const questionPart = eqMatch[1].trim();
+            const answer = parseInt(eqMatch[2], 10);
+            const speech = questionPart
+                .replace(/\+/g, ' plus ')
+                .replace(/\-|\u2212/g, ' minus ')
+                .replace(/[x\u00d7\*]/gi, ' times ')
+                .replace(/[÷\/]/g, ' divided by ')
+                .replace(/,\s*\?/g, '')
+                .replace(/\?/g, '')
+                .replace(/,/g, ', ');
+
+            questions.push({
+                display: questionPart + ' = ?',
+                speech: speech,
+                answer: answer
+            });
+        }
+    }
+    return questions;
+}
+
 function startPdfGame() {
     if (state.pdfQuestions.length === 0) return;
+    restoreRounds();
 
     state.currentRound = 0;
     state.practiceMode = true;
-    state.scores = [0, 0, 0, 0];
-    state.allResults = [[], [], [], []];
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
 
     // Override round 0 with uploaded questions
     ROUNDS[0]._originalGenerator = ROUNDS[0].generator;
@@ -317,7 +671,21 @@ function startPdfGame() {
 }
 
 function restoreRounds() {
-    // Restore original round 0 if it was overridden
+    QUESTIONS_PER_ROUND = 10;
+
+    // If ROUNDS was replaced by 2020 practice, rebuild from scratch
+    if (ROUNDS.length !== 4 || ROUNDS[0].name.startsWith('Patterns Set')) {
+        while (ROUNDS.length > 0) ROUNDS.pop();
+        ROUNDS.push(
+            { name: 'Patterns', emoji: '\u{1F522}', description: 'Find the next number in the pattern!', generator: generatePatternQuestions },
+            { name: 'Mental Math Chain', emoji: '\u{1F517}', description: 'Add and subtract single digits in a chain!', generator: generateChainQuestions },
+            { name: '2-Digit Addition', emoji: '\u2795', description: 'Add two 2-digit numbers (no regrouping)!', generator: generateAdditionQuestions },
+            { name: '2-Digit Subtraction', emoji: '\u2796', description: 'Subtract two 2-digit numbers (no regrouping)!', generator: generateSubtractionQuestions }
+        );
+        return;
+    }
+
+    // Restore original round 0 if overridden by upload
     if (ROUNDS[0]._originalGenerator) {
         ROUNDS[0].generator = ROUNDS[0]._originalGenerator;
         ROUNDS[0].name = ROUNDS[0]._originalName;
@@ -325,6 +693,13 @@ function restoreRounds() {
         delete ROUNDS[0]._originalGenerator;
         delete ROUNDS[0]._originalName;
         delete ROUNDS[0]._originalDesc;
+    }
+    // Restore all rounds if overridden by study sheet
+    for (let i = 0; i < 4; i++) {
+        if (ROUNDS[i]._ssGenerator) {
+            ROUNDS[i].generator = ROUNDS[i]._ssGenerator;
+            delete ROUNDS[i]._ssGenerator;
+        }
     }
 }
 
@@ -338,18 +713,113 @@ function showScreen(screenId) {
 // ==================== GAME FLOW ====================
 
 function startGame() {
+    restoreRounds();
     state.currentRound = 0;
     state.practiceMode = false;
-    state.scores = [0, 0, 0, 0];
-    state.allResults = [[], [], [], []];
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
     showRoundIntro();
 }
 
 function startPractice(roundIndex) {
+    restoreRounds();
     state.currentRound = roundIndex;
     state.practiceMode = true;
-    state.scores = [0, 0, 0, 0];
-    state.allResults = [[], [], [], []];
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+    QUESTIONS_PER_ROUND = 10;
+    showRoundIntro();
+}
+
+function startStudySheet() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 15;
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = true;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    // Override all 4 rounds with study sheet questions
+    const sections = ['patterns', 'chain', 'addition', 'subtraction'];
+    for (let i = 0; i < 4; i++) {
+        ROUNDS[i]._ssGenerator = ROUNDS[i].generator;
+        ROUNDS[i].generator = ((idx) => () => shuffle([...STUDY_SHEET_2025[sections[idx]]]))(i);
+    }
+
+    showRoundIntro();
+}
+
+function startPractice2020() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    // Replace ROUNDS with 6 pattern sets
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2020_PATTERNS.length; i++) {
+        ROUNDS.push({
+            name: 'Patterns Set ' + (i + 1),
+            emoji: '\u{1F522}',
+            description: '2020 Practice \u2014 Set ' + (i + 1) + ' of 6',
+            generator: ((idx) => () => shuffle([...PRACTICE_2020_PATTERNS[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
+function startPractice2020Chain() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    // Replace ROUNDS with 6 chain sets
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2020_CHAIN.length; i++) {
+        ROUNDS.push({
+            name: 'Chain Set ' + (i + 1),
+            emoji: '\u{1F517}',
+            description: '2020 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_CHAIN.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2020_CHAIN[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
+function startPractice2020Adding() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    // Replace ROUNDS with 6 adding sets
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2020_ADDING.length; i++) {
+        ROUNDS.push({
+            name: 'Adding Set ' + (i + 1),
+            emoji: '\u2795',
+            description: '2020 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_ADDING.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2020_ADDING[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
     showRoundIntro();
 }
 
@@ -377,7 +847,8 @@ async function showQuestion() {
 
     // Update header
     dom.headerRound.textContent = 'Round ' + (state.currentRound + 1);
-    dom.headerQuestion.textContent = 'Q ' + (state.currentQuestion + 1) + '/' + QUESTIONS_PER_ROUND;
+    const totalQ = Math.min(QUESTIONS_PER_ROUND, state.questions.length);
+    dom.headerQuestion.textContent = 'Q ' + (state.currentQuestion + 1) + '/' + totalQ;
     dom.headerScore.textContent = '\u2B50 ' + state.scores[state.currentRound];
 
     // Single screen — show listening prompt + input area together
@@ -387,7 +858,6 @@ async function showQuestion() {
     // Reset input — visible but disabled while question is being read
     dom.answerInput.value = '';
     dom.answerInput.disabled = true;
-    setNumpadEnabled(false);
     dom.btnSubmit.disabled = true;
 
     // Reset timer visual (paused, full bar)
@@ -408,7 +878,6 @@ async function showQuestion() {
     dom.questionText.textContent = '\u2753 Your answer?';
     dom.answerInput.disabled = false;
     dom.answerInput.focus();
-    setNumpadEnabled(true);
     dom.btnSubmit.disabled = false;
 
     startTimer();
@@ -503,7 +972,7 @@ function showFeedback(type, correctAnswer, userAnswer) {
 
     setTimeout(() => {
         state.currentQuestion++;
-        if (state.currentQuestion < QUESTIONS_PER_ROUND) {
+        if (state.currentQuestion < QUESTIONS_PER_ROUND && state.currentQuestion < state.questions.length) {
             showQuestion();
         } else {
             showRoundSummary();
@@ -516,7 +985,7 @@ function showRoundSummary() {
     const score = state.scores[state.currentRound];
 
     dom.summaryTitle.textContent = round.emoji + ' ' + round.name + ' Complete!';
-    dom.summaryScore.textContent = score + ' / ' + QUESTIONS_PER_ROUND;
+    dom.summaryScore.textContent = score + ' / ' + state.results.length;
 
     // Build review list
     let html = '';
@@ -550,7 +1019,7 @@ function showRoundSummary() {
     showScreen('screen-round-summary');
 
     const msg = score >= 8 ? 'Amazing!' : score >= 5 ? 'Good job!' : 'Keep practicing!';
-    speak('You got ' + score + ' out of ' + QUESTIONS_PER_ROUND + '. ' + msg);
+    speak('You got ' + score + ' out of ' + state.results.length + '. ' + msg);
 }
 
 function nextRound() {
@@ -595,7 +1064,7 @@ function showFinalScore() {
         html +=
             '<div class="final-round-header">' +
                 '<span>' + round.emoji + ' ' + round.name + '</span>' +
-                '<span class="final-round-score">' + state.scores[i] + ' / ' + QUESTIONS_PER_ROUND + '</span>' +
+                '<span class="final-round-score">' + state.scores[i] + ' / ' + state.allResults[i].length + '</span>' +
             '</div>';
 
         // Question-by-question details for this round
@@ -628,6 +1097,92 @@ function showFinalScore() {
 
     showScreen('screen-final');
     speak('You scored ' + total + ' out of ' + maxScore + '. ' + message);
+
+    saveSession(total, maxScore);
+}
+
+// ==================== SESSION HISTORY ====================
+
+function saveSession(total, maxScore) {
+    const history = JSON.parse(localStorage.getItem('mathBowlHistory') || '[]');
+
+    const roundDetails = [];
+    ROUNDS.forEach((round, i) => {
+        if (state.allResults[i].length === 0) return;
+        const wrongOnes = [];
+        state.allResults[i].forEach(r => {
+            if (!r.correct) {
+                wrongOnes.push({
+                    q: r.questionDisplay.replace(' = ?', '').replace(',  ?', ''),
+                    correct: r.correctAnswer,
+                    yours: r.userAnswer
+                });
+            }
+        });
+        roundDetails.push({
+            name: round.emoji + ' ' + round.name,
+            score: state.scores[i],
+            total: state.allResults[i].length,
+            wrong: wrongOnes
+        });
+    });
+
+    history.unshift({
+        date: new Date().toLocaleString(),
+        score: total,
+        maxScore: maxScore,
+        rounds: roundDetails
+    });
+
+    // Keep only the last 50 sessions
+    if (history.length > 50) history.length = 50;
+    localStorage.setItem('mathBowlHistory', JSON.stringify(history));
+}
+
+function renderHistory() {
+    const history = JSON.parse(localStorage.getItem('mathBowlHistory') || '[]');
+    const container = $('history-list');
+    const btnClear = $('btn-clear-history');
+
+    if (history.length === 0) {
+        container.innerHTML = '<p class="history-empty">No sessions yet. Play a round to see your history!</p>';
+        btnClear.classList.add('hidden');
+        return;
+    }
+
+    btnClear.classList.remove('hidden');
+    let html = '';
+    history.forEach((session, si) => {
+        const pct = Math.round((session.score / session.maxScore) * 100);
+        const medal = pct >= 90 ? '\u{1F3C6}' : pct >= 70 ? '\u{1F31F}' : pct >= 50 ? '\u{1F44D}' : '\u{1F4AA}';
+
+        html += '<details class="history-entry">';
+        html += '<summary class="history-summary">';
+        html += '<span class="history-medal">' + medal + '</span>';
+        html += '<span class="history-info">';
+        html += '<span class="history-score">' + session.score + '/' + session.maxScore + ' (' + pct + '%)</span>';
+        html += '<span class="history-date">' + escapeHtml(session.date) + '</span>';
+        html += '</span>';
+        html += '</summary>';
+        html += '<div class="history-details">';
+
+        session.rounds.forEach(rd => {
+            html += '<div class="history-round">';
+            html += '<strong>' + escapeHtml(rd.name) + '</strong>: ' + rd.score + '/' + rd.total;
+            if (rd.wrong.length > 0) {
+                html += '<div class="history-wrong">';
+                rd.wrong.forEach(w => {
+                    const yours = w.yours !== null ? w.yours : 'no answer';
+                    html += '<div class="history-wrong-item">\u274C ' + escapeHtml(w.q) + ' = ' + w.correct + ' (you: ' + escapeHtml(String(yours)) + ')</div>';
+                });
+                html += '</div>';
+            }
+            html += '</div>';
+        });
+
+        html += '</div></details>';
+    });
+    container.innerHTML = html;
 }
 
 // ==================== TIMER ====================
@@ -680,33 +1235,14 @@ function stopTimer() {
     dom.timerBar.style.width = rect.width + 'px';
 }
 
-// ==================== NUMPAD ====================
-
-function setNumpadEnabled(enabled) {
-    document.querySelectorAll('.numpad-btn').forEach(btn => {
-        btn.disabled = !enabled;
-    });
-}
-
-function handleNumpadClick(e) {
-    const btn = e.target.closest('.numpad-btn');
-    if (!btn || btn.disabled) return;
-
-    if (btn.dataset.num !== undefined) {
-        if (dom.answerInput.value.length < 3) {
-            dom.answerInput.value += btn.dataset.num;
-        }
-    } else if (btn.dataset.action === 'delete') {
-        dom.answerInput.value = dom.answerInput.value.slice(0, -1);
-    } else if (btn.dataset.action === 'submit') {
-        submitAnswer();
-    }
-}
-
 // ==================== EVENT LISTENERS ====================
 
 function setupEventListeners() {
     $('btn-start').addEventListener('click', startGame);
+    $('btn-study-sheet').addEventListener('click', startStudySheet);
+    $('btn-practice-2020').addEventListener('click', startPractice2020);
+    $('btn-practice-2020-chain').addEventListener('click', startPractice2020Chain);
+    $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
     $('btn-begin-round').addEventListener('click', beginRound);
 
     // Practice round buttons
@@ -717,8 +1253,6 @@ function setupEventListeners() {
     });
 
     dom.btnSubmit.addEventListener('click', submitAnswer);
-
-    $('numpad').addEventListener('click', handleNumpadClick);
 
     dom.answerInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -736,7 +1270,13 @@ function setupEventListeners() {
 
     $('btn-restart').addEventListener('click', () => {
         restoreRounds();
+        renderHistory();
         showScreen('screen-start');
+    });
+
+    $('btn-clear-history').addEventListener('click', () => {
+        localStorage.removeItem('mathBowlHistory');
+        renderHistory();
     });
 
     // End Game buttons (multiple across screens)
@@ -774,12 +1314,50 @@ function setupEventListeners() {
     });
 
     $('btn-start-upload').addEventListener('click', startPdfGame);
+
+    // Photo Upload (OCR) — supports multiple images
+    $('photo-upload').addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        const statusEl = $('upload-status');
+        const btnUpload = $('btn-start-upload');
+        statusEl.classList.remove('hidden');
+        statusEl.className = 'upload-status';
+        btnUpload.classList.add('hidden');
+
+        const allQuestions = [];
+        try {
+            for (let i = 0; i < files.length; i++) {
+                statusEl.textContent = '\u{1F50D} Reading image ' + (i + 1) + ' of ' + files.length + '...';
+                const questions = await parseImage(files[i]);
+                allQuestions.push(...questions);
+            }
+
+            if (allQuestions.length === 0) {
+                statusEl.className = 'upload-status upload-error';
+                statusEl.textContent = 'No questions found. Each line needs: question = answer';
+            } else {
+                state.pdfQuestions = allQuestions;
+                statusEl.className = 'upload-status upload-success';
+                statusEl.textContent = '\u2705 Found ' + allQuestions.length + ' questions from ' + files.length + ' image' + (files.length > 1 ? 's' : '');
+                btnUpload.classList.remove('hidden');
+            }
+        } catch (err) {
+            statusEl.className = 'upload-status upload-error';
+            statusEl.textContent = '\u274C Error reading image. Try a clearer photo.';
+        }
+
+        // Reset input so same files can be re-uploaded
+        e.target.value = '';
+    });
 }
 
 // ==================== INIT ====================
 
 function init() {
     setupEventListeners();
+    renderHistory();
 }
 
 if (document.readyState === 'loading') {

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -19,10 +20,14 @@
                 <p class="subtitle">Grade 1</p>
                 <div class="info-box">
                     <p>&#10067; 10 Questions Each</p>
-                    <p>&#9201; 5 Seconds Per Question</p>
+                    <p>&#9201; 10 Seconds Per Question</p>
                     <p>&#128264; Listen &amp; Answer!</p>
                 </div>
                 <button id="btn-start" class="btn btn-primary btn-large">Full Game (4 Rounds) &#128640;</button>
+                <button id="btn-study-sheet" class="btn btn-study-sheet btn-large">2025 Study Sheet (15 Q each) &#128218;</button>
+                <button id="btn-practice-2020" class="btn btn-practice-2020 btn-large">2020 Practice Patterns (6 Sets) &#128203;</button>
+                <button id="btn-practice-2020-chain" class="btn btn-practice-2020 btn-large">2020 Practice Chain (6 Sets) &#128203;</button>
+                <button id="btn-practice-2020-adding" class="btn btn-practice-2020 btn-large">2020 Practice Adding (6 Sets) &#128203;</button>
                 <div class="practice-section">
                     <p class="practice-label">&#127919; Or practice a round:</p>
                     <div class="practice-buttons">
@@ -34,21 +39,30 @@
                 </div>
                 <div class="upload-section">
                     <p class="practice-label">&#128196; Or upload your own questions:</p>
-                    <label class="upload-area" id="upload-area">
-                        <input type="file" id="file-upload" accept=".xlsx,.xls,.csv" hidden>
-                        <span class="upload-icon">&#128202;</span>
-                        <span class="upload-text">Click to upload Excel or CSV</span>
-                    </label>
-                    <div id="upload-status" class="upload-status hidden"></div>
-                    <button id="btn-start-upload" class="btn btn-primary btn-large hidden">Play Uploaded Questions &#128202;</button>
-                    <div id="format-hint" class="pdf-format-hint">
-                        <strong>Excel Format:</strong> Two columns<br>
-                        Column A: <code>Question</code> &nbsp; Column B: <code>Answer</code><br>
-                        Example:<br>
-                        <code>2 + 3</code> &nbsp;|&nbsp; <code>5</code><br>
-                        <code>15 + 23</code> &nbsp;|&nbsp; <code>38</code><br>
-                        <code>1, 3, 5, 7, ?</code> &nbsp;|&nbsp; <code>9</code>
+                    <div class="upload-row">
+                        <label class="upload-area" id="upload-area">
+                            <input type="file" id="file-upload" accept=".xlsx,.xls,.csv" hidden>
+                            <span class="upload-icon">&#128202;</span>
+                            <span class="upload-text">Excel / CSV</span>
+                        </label>
+                        <label class="upload-area" id="upload-area-photo">
+                            <input type="file" id="photo-upload" accept="image/*" multiple hidden>
+                            <span class="upload-icon">&#128247;</span>
+                            <span class="upload-text">Photo(s)</span>
+                        </label>
                     </div>
+                    <div id="upload-status" class="upload-status hidden"></div>
+                    <button id="btn-start-upload" class="btn btn-primary btn-large hidden">Play Uploaded Questions &#127919;</button>
+                    <div id="format-hint" class="pdf-format-hint">
+                        <strong>Excel:</strong> Column A = Question, Column B = Answer<br>
+                        <strong>Photo:</strong> Each line: <code>question = answer</code><br>
+                        Example: <code>2 + 3 = 5</code>
+                    </div>
+                </div>
+                <div class="history-section">
+                    <p class="practice-label">&#128202; Past Sessions:</p>
+                    <div id="history-list" class="history-list"></div>
+                    <button id="btn-clear-history" class="btn btn-clear-history hidden">Clear History &#128465;</button>
                 </div>
             </div>
         </div>
@@ -60,7 +74,7 @@
                 <h2 id="round-name" class="round-title"></h2>
                 <p id="round-description" class="round-desc"></p>
                 <div class="round-info">
-                    <span>10 questions</span> &bull; <span>5 seconds each</span>
+                    <span>10 questions</span> &bull; <span>10 seconds each</span>
                 </div>
                 <button id="btn-begin-round" class="btn btn-primary btn-large">Ready? Go! &#127919;</button>
                 <button class="btn-end-game" data-action="end-game">End Game</button>
@@ -90,21 +104,6 @@
                                inputmode="numeric" pattern="[0-9]*"
                                placeholder="?" autocomplete="off" maxlength="3">
                         <button id="btn-submit" class="btn btn-success btn-round" title="Submit">&#10003;</button>
-                    </div>
-
-                    <div id="numpad" class="numpad">
-                        <button class="numpad-btn" data-num="1">1</button>
-                        <button class="numpad-btn" data-num="2">2</button>
-                        <button class="numpad-btn" data-num="3">3</button>
-                        <button class="numpad-btn" data-num="4">4</button>
-                        <button class="numpad-btn" data-num="5">5</button>
-                        <button class="numpad-btn" data-num="6">6</button>
-                        <button class="numpad-btn" data-num="7">7</button>
-                        <button class="numpad-btn" data-num="8">8</button>
-                        <button class="numpad-btn" data-num="9">9</button>
-                        <button class="numpad-btn numpad-del" data-action="delete">&#9003;</button>
-                        <button class="numpad-btn" data-num="0">0</button>
-                        <button class="numpad-btn numpad-submit" data-action="submit">GO</button>
                     </div>
                 </div>
 

@@ -141,6 +141,18 @@ body {
     color: white;
 }
 
+.btn-study-sheet {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    margin-top: 8px;
+}
+
+.btn-practice-2020 {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    color: white;
+    margin-top: 8px;
+}
+
 .btn-success {
     background: linear-gradient(135deg, var(--success), #00a381);
     color: white;
@@ -615,11 +627,125 @@ body {
     color: white;
 }
 
+/* ========== HISTORY SECTION ========== */
+.history-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px solid var(--light-gray);
+}
+
+.history-list {
+    text-align: left;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.history-empty {
+    text-align: center;
+    color: #999;
+    font-size: 0.95rem;
+}
+
+.history-entry {
+    background: #f9f9ff;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.history-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.history-summary::-webkit-details-marker {
+    display: none;
+}
+
+.history-summary::before {
+    content: '\25B6';
+    font-size: 0.7rem;
+    color: #999;
+    transition: transform 0.2s;
+}
+
+details[open] > .history-summary::before {
+    transform: rotate(90deg);
+}
+
+.history-medal {
+    font-size: 1.2rem;
+}
+
+.history-info {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-score {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.history-date {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.history-details {
+    padding: 6px 14px 12px;
+    border-top: 1px solid #eee;
+}
+
+.history-round {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.history-wrong {
+    margin-left: 16px;
+    margin-top: 2px;
+}
+
+.history-wrong-item {
+    font-size: 0.82rem;
+    color: var(--danger);
+    margin-bottom: 1px;
+}
+
+.btn-clear-history {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 8px;
+    padding: 4px 12px;
+}
+
+.btn-clear-history:hover {
+    color: var(--danger);
+}
+
 /* ========== UPLOAD SECTION ========== */
 .upload-section {
     margin-top: 24px;
     padding-top: 20px;
     border-top: 2px solid var(--light-gray);
+}
+
+.upload-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
 .upload-area {
