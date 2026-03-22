@@ -534,6 +534,87 @@ const state = {
 
 // ==================== DOM REFERENCES ====================
 const $ = (id) => document.getElementById(id);
+const PRACTICE_2020_EQUATIONS = [
+    // Set 1
+    [
+        { display: 'N + 14 = 36', speech: 'N plus 14 equals 36. What is N?', answer: 22 },
+        { display: 'N + 31 = 52', speech: 'N plus 31 equals 52. What is N?', answer: 21 },
+        { display: 'N + 26 = 48', speech: 'N plus 26 equals 48. What is N?', answer: 22 },
+        { display: 'N \u2212 15 = 22', speech: 'N minus 15 equals 22. What is N?', answer: 37 },
+        { display: 'N \u2212 23 = 31', speech: 'N minus 23 equals 31. What is N?', answer: 54 },
+        { display: 'N \u2212 24 = 35', speech: 'N minus 24 equals 35. What is N?', answer: 59 },
+        { display: 'N + 15 = 38', speech: 'N plus 15 equals 38. What is N?', answer: 23 },
+        { display: 'N + 25 = 47', speech: 'N plus 25 equals 47. What is N?', answer: 22 },
+        { display: 'N + 25 = 48', speech: 'N plus 25 equals 48. What is N?', answer: 23 },
+        { display: 'N \u2212 16 = 21', speech: 'N minus 16 equals 21. What is N?', answer: 37 }
+    ],
+    // Set 2
+    [
+        { display: 'N \u2212 34 = 41', speech: 'N minus 34 equals 41. What is N?', answer: 75 },
+        { display: 'N \u2212 35 = 41', speech: 'N minus 35 equals 41. What is N?', answer: 76 },
+        { display: 'N + 12 = 34', speech: 'N plus 12 equals 34. What is N?', answer: 22 },
+        { display: 'N + 22 = 37', speech: 'N plus 22 equals 37. What is N?', answer: 15 },
+        { display: 'N + 32 = 47', speech: 'N plus 32 equals 47. What is N?', answer: 15 },
+        { display: 'N \u2212 22 = 35', speech: 'N minus 22 equals 35. What is N?', answer: 57 },
+        { display: 'N \u2212 31 = 37', speech: 'N minus 31 equals 37. What is N?', answer: 68 },
+        { display: 'N \u2212 34 = 45', speech: 'N minus 34 equals 45. What is N?', answer: 79 },
+        { display: 'N + 15 = 38', speech: 'N plus 15 equals 38. What is N?', answer: 23 },
+        { display: 'N + 24 = 38', speech: 'N plus 24 equals 38. What is N?', answer: 14 }
+    ],
+    // Set 3
+    [
+        { display: 'N + 24 = 39', speech: 'N plus 24 equals 39. What is N?', answer: 15 },
+        { display: 'N \u2212 16 = 23', speech: 'N minus 16 equals 23. What is N?', answer: 39 },
+        { display: 'N \u2212 26 = 31', speech: 'N minus 26 equals 31. What is N?', answer: 57 },
+        { display: 'N \u2212 23 = 36', speech: 'N minus 23 equals 36. What is N?', answer: 59 },
+        { display: 'N + 11 = 33', speech: 'N plus 11 equals 33. What is N?', answer: 22 },
+        { display: 'N + 27 = 49', speech: 'N plus 27 equals 49. What is N?', answer: 22 },
+        { display: 'N + 24 = 36', speech: 'N plus 24 equals 36. What is N?', answer: 12 },
+        { display: 'N \u2212 27 = 32', speech: 'N minus 27 equals 32. What is N?', answer: 59 },
+        { display: 'N \u2212 26 = 32', speech: 'N minus 26 equals 32. What is N?', answer: 58 },
+        { display: 'N \u2212 26 = 33', speech: 'N minus 26 equals 33. What is N?', answer: 59 }
+    ],
+    // Set 4
+    [
+        { display: 'N + 25 = 47', speech: 'N plus 25 equals 47. What is N?', answer: 22 },
+        { display: 'N + 32 = 53', speech: 'N plus 32 equals 53. What is N?', answer: 21 },
+        { display: 'N + 24 = 49', speech: 'N plus 24 equals 49. What is N?', answer: 25 },
+        { display: 'N \u2212 23 = 34', speech: 'N minus 23 equals 34. What is N?', answer: 57 },
+        { display: 'N + 22 = 37', speech: 'N plus 22 equals 37. What is N?', answer: 15 },
+        { display: 'N \u2212 25 = 35', speech: 'N minus 25 equals 35. What is N?', answer: 60 },
+        { display: 'N + 25 = 48', speech: 'N plus 25 equals 48. What is N?', answer: 23 },
+        { display: 'N + 26 = 48', speech: 'N plus 26 equals 48. What is N?', answer: 22 },
+        { display: 'N + 22 = 36', speech: 'N plus 22 equals 36. What is N?', answer: 14 },
+        { display: 'N \u2212 26 = 33', speech: 'N minus 26 equals 33. What is N?', answer: 59 }
+    ],
+    // Set 5
+    [
+        { display: 'N \u2212 36 = 42', speech: 'N minus 36 equals 42. What is N?', answer: 78 },
+        { display: 'N \u2212 25 = 31', speech: 'N minus 25 equals 31. What is N?', answer: 56 },
+        { display: 'N + 24 = 45', speech: 'N plus 24 equals 45. What is N?', answer: 21 },
+        { display: 'N + 23 = 45', speech: 'N plus 23 equals 45. What is N?', answer: 22 },
+        { display: 'N + 34 = 47', speech: 'N plus 34 equals 47. What is N?', answer: 13 },
+        { display: 'N \u2212 22 = 31', speech: 'N minus 22 equals 31. What is N?', answer: 53 },
+        { display: 'N \u2212 22 = 37', speech: 'N minus 22 equals 37. What is N?', answer: 59 },
+        { display: 'N \u2212 34 = 41', speech: 'N minus 34 equals 41. What is N?', answer: 75 },
+        { display: 'N + 24 = 49', speech: 'N plus 24 equals 49. What is N?', answer: 25 },
+        { display: 'N + 35 = 58', speech: 'N plus 35 equals 58. What is N?', answer: 23 }
+    ],
+    // Set 6
+    [
+        { display: 'N + 24 = 37', speech: 'N plus 24 equals 37. What is N?', answer: 13 },
+        { display: 'N \u2212 28 = 31', speech: 'N minus 28 equals 31. What is N?', answer: 59 },
+        { display: 'N \u2212 26 = 31', speech: 'N minus 26 equals 31. What is N?', answer: 57 },
+        { display: 'N \u2212 24 = 35', speech: 'N minus 24 equals 35. What is N?', answer: 59 },
+        { display: 'N + 22 = 36', speech: 'N plus 22 equals 36. What is N?', answer: 14 },
+        { display: 'N + 26 = 48', speech: 'N plus 26 equals 48. What is N?', answer: 22 },
+        { display: 'N + 21 = 37', speech: 'N plus 21 equals 37. What is N?', answer: 16 },
+        { display: 'N \u2212 36 = 42', speech: 'N minus 36 equals 42. What is N?', answer: 78 },
+        { display: 'N \u2212 22 = 37', speech: 'N minus 22 equals 37. What is N?', answer: 59 },
+        { display: 'N + 32 = 55', speech: 'N plus 32 equals 55. What is N?', answer: 23 }
+    ]
+];
+
 const dom = {
     roundBadge: $('round-badge'),
     roundName: $('round-name'),
@@ -863,6 +944,29 @@ function startPractice2020Adding() {
             emoji: '\u2795',
             description: '2020 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_ADDING.length,
             generator: ((idx) => () => shuffle([...PRACTICE_2020_ADDING[idx]]))(i)
+        });
+    }
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = false;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
+function startPractice2020Equations() {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 10;
+
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    for (let i = 0; i < PRACTICE_2020_EQUATIONS.length; i++) {
+        ROUNDS.push({
+            name: 'Find N Set ' + (i + 1),
+            emoji: '\u{1F9E9}',
+            description: '2020 Equations \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_EQUATIONS.length,
+            generator: ((idx) => () => shuffle([...PRACTICE_2020_EQUATIONS[idx]]))(i)
         });
     }
 
@@ -1388,6 +1492,7 @@ function setupEventListeners() {
     $('btn-practice-2020').addEventListener('click', startPractice2020);
     $('btn-practice-2020-chain').addEventListener('click', startPractice2020Chain);
     $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
+    $('btn-practice-2020-equations').addEventListener('click', startPractice2020Equations);
     $('btn-practice-2024-patterns').addEventListener('click', startPractice2024Patterns);
     $('btn-practice-2024-chain').addEventListener('click', startPractice2024Chain);
     $('btn-practice-2024-adding').addEventListener('click', startPractice2024Adding);
