@@ -1,7 +1,8 @@
 // ==================== CONFIGURATION ====================
 let QUESTIONS_PER_ROUND = 10;
 const TIME_LIMIT = 10; // seconds
-const SPEECH_RATE = 0.85;
+const SPEECH_RATE = 0.75;
+const SPEECH_RATE_CHAIN = 0.65;
 const FEEDBACK_DELAY = 2500; // ms to show feedback before next question
 const FEEDBACK_DELAY_WRONG = 5000; // ms for wrong/timeout — more time to review
 
@@ -790,7 +791,7 @@ function generateSubtractionQuestions() {
 
 // ==================== SPEECH SYNTHESIS ====================
 
-function speak(text) {
+function speak(text, rate) {
     return new Promise((resolve) => {
         if (!('speechSynthesis' in window)) {
             resolve();
@@ -802,7 +803,7 @@ function speak(text) {
         speechSynthesis.resume();
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = SPEECH_RATE;
+        utterance.rate = rate || SPEECH_RATE;
         utterance.pitch = 1.1;
         utterance.onend = () => resolve();
         utterance.onerror = () => resolve();
@@ -1148,7 +1149,9 @@ async function showQuestion() {
     showScreen('screen-question');
 
     // Speak the question (student listens on this same screen)
-    await speak(q.speech);
+    const roundCat = categorizeRound(ROUNDS[state.currentRound].name);
+    const qRate = (roundCat === 'chain') ? SPEECH_RATE_CHAIN : SPEECH_RATE;
+    await speak(q.speech, qRate);
 
     // Safety: if already answered somehow, bail
     if (state.isAnswered) return;
