@@ -529,7 +529,9 @@ const state = {
     timerInterval: null,
     timerTimeout: null,
     timeLeft: TIME_LIMIT,
-    isAnswered: false
+    isAnswered: false,
+    isPaused: false,
+    feedbackTimeout: null
 };
 
 // ==================== DOM REFERENCES ====================
@@ -884,6 +886,35 @@ function startStudySheet() {
     showRoundIntro();
 }
 
+function startStudySheetRound(sectionKey) {
+    restoreRounds();
+    QUESTIONS_PER_ROUND = 15;
+
+    const sectionMeta = {
+        patterns:    { name: 'Patterns',           emoji: '\u{1F522}', description: '2025 Study Sheet \u2014 Patterns' },
+        chain:       { name: 'Mental Math Chain',   emoji: '\u{1F517}', description: '2025 Study Sheet \u2014 Chain' },
+        addition:    { name: '2-Digit Addition',    emoji: '\u2795',    description: '2025 Study Sheet \u2014 Addition' },
+        subtraction: { name: '2-Digit Subtraction', emoji: '\u2796',    description: '2025 Study Sheet \u2014 Subtraction' }
+    };
+    const meta = sectionMeta[sectionKey];
+
+    while (ROUNDS.length > 0) ROUNDS.pop();
+    ROUNDS.push({
+        name: meta.name,
+        emoji: meta.emoji,
+        description: meta.description,
+        generator: () => shuffle([...STUDY_SHEET_2025[sectionKey]])
+    });
+
+    state.currentRound = 0;
+    state.practiceMode = false;
+    state.studySheetMode = true;
+    state.scores = new Array(ROUNDS.length).fill(0);
+    state.allResults = ROUNDS.map(() => []);
+
+    showRoundIntro();
+}
+
 function startPractice2020() {
     restoreRounds();
     QUESTIONS_PER_ROUND = 10;
@@ -1219,7 +1250,8 @@ function showFeedback(type, correctAnswer, userAnswer) {
     showScreen('screen-feedback');
 
     const delay = (type === 'correct') ? FEEDBACK_DELAY : FEEDBACK_DELAY_WRONG;
-    setTimeout(() => {
+    state.feedbackTimeout = setTimeout(() => {
+        state.feedbackTimeout = null;
         state.currentQuestion++;
         if (state.currentQuestion < QUESTIONS_PER_ROUND && state.currentQuestion < state.questions.length) {
             showQuestion();
@@ -1290,6 +1322,12 @@ function endGame() {
         state.allResults[state.currentRound] = [...state.results];
     }
     stopTimer();
+    if (state.feedbackTimeout) {
+        clearTimeout(state.feedbackTimeout);
+        state.feedbackTimeout = null;
+    }
+    state.isPaused = false;
+    document.getElementById('pause-overlay').classList.add('hidden');
     speechSynthesis.cancel();
     state.isAnswered = true;
     showFinalScore();
@@ -1347,12 +1385,230 @@ function showFinalScore() {
     showScreen('screen-final');
     speak('You scored ' + total + ' out of ' + maxScore + '. ' + message);
 
+    generateTips();
+
     saveSession(total, maxScore);
+}
+
+// ==================== TIPS & RECOMMENDATIONS ====================
+
+function categorizeRound(name) {
+    const n = name.toLowerCase();
+    if (n.includes('pattern')) return 'patterns';
+    if (n.includes('chain') || n.includes('mental')) return 'chain';
+    if (n.includes('add')) return 'addition';
+    if (n.includes('sub')) return 'subtraction';
+    if (n.includes('find n') || n.includes('equation')) return 'equations';
+    return 'general';
+}
+
+function generateTips() {
+    const tipsSection = document.getElementById('tips-section');
+    const tipsContent = document.getElementById('tips-content');
+
+    // Gather per-category stats
+    const stats = {};
+    ROUNDS.forEach((round, i) => {
+        const results = state.allResults[i];
+        if (results.length === 0) return;
+        const cat = categorizeRound(round.name);
+        if (!stats[cat]) stats[cat] = { correct: 0, total: 0, timedOut: 0, wrong: [], roundName: round.name };
+        results.forEach(r => {
+            stats[cat].total++;
+            if (r.correct) stats[cat].correct++;
+            if (r.timedOut && !r.correct) stats[cat].timedOut++;
+            if (!r.correct) stats[cat].wrong.push(r);
+        });
+    });
+
+    const categories = Object.keys(stats);
+    if (categories.length === 0) {
+        tipsSection.classList.add('hidden');
+        return;
+    }
+
+    let html = '';
+
+    // === Per-category analysis ===
+    categories.forEach(cat => {
+        const s = stats[cat];
+        const pct = Math.round((s.correct / s.total) * 100);
+        const timedOutPct = s.total > 0 ? Math.round((s.timedOut / s.total) * 100) : 0;
+
+        // Status badge
+        let badge, badgeClass;
+        if (pct >= 90) { badge = '\u2B50 Excellent'; badgeClass = 'tip-badge-excellent'; }
+        else if (pct >= 70) { badge = '\u{1F44D} Good'; badgeClass = 'tip-badge-good'; }
+        else if (pct >= 50) { badge = '\u{1F4AA} Needs Practice'; badgeClass = 'tip-badge-practice'; }
+        else { badge = '\u{1F6A8} Focus Area'; badgeClass = 'tip-badge-focus'; }
+
+        const catLabel = getCategoryLabel(cat);
+        html += '<div class="tip-card">';
+        html += '<div class="tip-card-header">';
+        html += '<span class="tip-cat-name">' + catLabel + '</span>';
+        html += '<span class="tip-badge ' + badgeClass + '">' + badge + '</span>';
+        html += '</div>';
+        html += '<div class="tip-score-bar"><div class="tip-score-fill" style="width:' + pct + '%"></div></div>';
+        html += '<div class="tip-score-label">' + s.correct + '/' + s.total + ' correct (' + pct + '%)</div>';
+
+        // Speed issue
+        if (timedOutPct >= 30) {
+            html += '<div class="tip-item tip-speed">\u23F1 <strong>Speed:</strong> ' + s.timedOut + ' question' + (s.timedOut > 1 ? 's' : '') + ' timed out. Try to answer faster — start with a quick guess and refine.</div>';
+        }
+
+        // Category-specific tips
+        const tips = getCategoryTips(cat, s, pct);
+        tips.forEach(t => {
+            html += '<div class="tip-item">' + t + '</div>';
+        });
+
+        html += '</div>';
+    });
+
+    // === General mental math strategies ===
+    html += '<div class="tip-card tip-card-general">';
+    html += '<div class="tip-card-header"><span class="tip-cat-name">\u{1F9E0} General Mental Math Strategies</span></div>';
+
+    const allCorrect = Object.values(stats).reduce((a, s) => a + s.correct, 0);
+    const allTotal = Object.values(stats).reduce((a, s) => a + s.total, 0);
+    const allPct = allTotal > 0 ? Math.round((allCorrect / allTotal) * 100) : 0;
+
+    if (allPct >= 90) {
+        html += '<div class="tip-item">\u{1F3C6} Outstanding performance! Challenge yourself with faster time limits or harder problems.</div>';
+    } else if (allPct >= 70) {
+        html += '<div class="tip-item">\u{1F4AA} Strong foundation! Focus on the categories below 90% to reach champion level.</div>';
+    } else {
+        html += '<div class="tip-item">\u{1F4DA} Practice a little bit every day — even 5 minutes helps build speed and confidence.</div>';
+    }
+
+    html += '<div class="tip-item">\u270D\uFE0F <strong>Write it in your head:</strong> Visualize the numbers on a mental whiteboard as they are read.</div>';
+    html += '<div class="tip-item">\u{1F50A} <strong>Say it aloud:</strong> Repeating the problem quietly helps memory.</div>';
+    html += '<div class="tip-item">\u23F3 <strong>Don\'t rush the listen phase:</strong> Use the speaking time to understand, then answer quickly.</div>';
+    html += '</div>';
+
+    tipsContent.innerHTML = html;
+    tipsSection.classList.remove('hidden');
+}
+
+function getCategoryLabel(cat) {
+    const labels = {
+        patterns: '\u{1F522} Patterns',
+        chain: '\u{1F517} Mental Math Chain',
+        addition: '\u2795 Addition',
+        subtraction: '\u2796 Subtraction',
+        equations: '\u{1F9E9} Find N / Equations',
+        general: '\u{1F4D0} General'
+    };
+    return labels[cat] || cat;
+}
+
+function getCategoryTips(cat, s, pct) {
+    const tips = [];
+    const wrongAnswers = s.wrong;
+
+    if (cat === 'patterns') {
+        if (pct < 70) {
+            tips.push('\u{1F50D} <strong>Find the rule first:</strong> Look at the difference between each pair of numbers. Is it always the same? That\'s your pattern step.');
+            tips.push('\u270F\uFE0F <strong>Trick:</strong> Subtract the 2nd number from the 1st (e.g., 30, 26 → difference is 4). Then apply that to the last number.');
+        }
+        if (pct >= 70 && pct < 90) {
+            tips.push('\u{1F4A1} Good pattern spotting! Double-check by verifying the rule works for ALL given numbers, not just the first two.');
+        }
+        if (pct >= 90) {
+            tips.push('\u2B50 Excellent pattern recognition! You\'re identifying the step quickly.');
+        }
+        // Check for common mistakes
+        const closeWrong = wrongAnswers.filter(r => r.userAnswer !== null && Math.abs(r.userAnswer - r.correctAnswer) <= 3);
+        if (closeWrong.length > 0) {
+            tips.push('\u{1F3AF} Some answers were very close! Double-check your final step — make sure you\'re adding/subtracting the difference to the <em>last</em> number, not an earlier one.');
+        }
+    }
+
+    if (cat === 'chain') {
+        if (pct < 70) {
+            tips.push('\u{1F9EE} <strong>Go step by step:</strong> Don\'t try to solve it all at once. Start with the first two numbers, get that result, then apply the next operation.');
+            tips.push('\u261D\uFE0F <strong>Use fingers:</strong> It\'s okay to count on your fingers for each step!');
+            tips.push('\u{1F4A1} <strong>Watch the signs:</strong> Pay extra attention to whether you\'re adding (+) or subtracting (−).');
+        }
+        if (pct >= 70 && pct < 90) {
+            tips.push('\u{1F44F} Great chaining! For even more speed, try combining two operations at once (e.g., "+8 −3" is the same as "+5").');
+        }
+        if (pct >= 90) {
+            tips.push('\u2B50 Superb mental math chaining!');
+        }
+        const signErrors = wrongAnswers.filter(r => {
+            if (r.userAnswer === null) return false;
+            const diff = Math.abs(r.userAnswer - r.correctAnswer);
+            return diff % 2 === 0 && diff <= 18;
+        });
+        if (signErrors.length >= 2) {
+            tips.push('\u26A0\uFE0F It looks like some errors might be from mixing up + and −. Slow down on the signs!');
+        }
+    }
+
+    if (cat === 'addition') {
+        if (pct < 70) {
+            tips.push('\u{1F522} <strong>Split into tens and ones:</strong> For 35 + 24, think: 30+20 = 50, then 5+4 = 9, so 59.');
+            tips.push('\u{1F4A1} <strong>Add tens first:</strong> Always start with the bigger place value — it\'s easier and faster.');
+        }
+        if (pct >= 70 && pct < 90) {
+            tips.push('\u{1F44D} Good addition skills! Make sure you\'re adding ones carefully — that\'s where small mistakes creep in.');
+        }
+        if (pct >= 90) {
+            tips.push('\u2B50 Excellent addition! Your place-value skills are strong.');
+        }
+        const offByTen = wrongAnswers.filter(r => r.userAnswer !== null && Math.abs(r.userAnswer - r.correctAnswer) === 10);
+        if (offByTen.length > 0) {
+            tips.push('\u{1F50E} Some answers were off by exactly 10. Double-check your tens column!');
+        }
+        const offByOne = wrongAnswers.filter(r => r.userAnswer !== null && Math.abs(r.userAnswer - r.correctAnswer) === 1);
+        if (offByOne.length >= 2) {
+            tips.push('\u{1F50E} A few answers were off by 1 — slow down on the ones digit.');
+        }
+    }
+
+    if (cat === 'subtraction') {
+        if (pct < 70) {
+            tips.push('\u{1F522} <strong>Split into tens and ones:</strong> For 85 − 32, think: 80−30 = 50, then 5−2 = 3, so 53.');
+            tips.push('\u{1F4A1} <strong>Count up:</strong> Instead of subtracting, count up from the smaller number. 32 + ? = 85 → 32+50=82, 82+3=85, answer: 53.');
+        }
+        if (pct >= 70 && pct < 90) {
+            tips.push('\u{1F44D} Solid subtraction! Keep using the split method for speed.');
+        }
+        if (pct >= 90) {
+            tips.push('\u2B50 Great subtraction skills!');
+        }
+        const offByTen = wrongAnswers.filter(r => r.userAnswer !== null && Math.abs(r.userAnswer - r.correctAnswer) === 10);
+        if (offByTen.length > 0) {
+            tips.push('\u{1F50E} Some answers were off by 10. Focus on getting the tens digit right first.');
+        }
+    }
+
+    if (cat === 'equations') {
+        if (pct < 70) {
+            tips.push('\u{1F9E9} <strong>Think "undo":</strong> For N + 13 = 25, undo the +13 by subtracting: 25 − 13 = 12.');
+            tips.push('\u{1F504} <strong>For subtraction equations:</strong> N − 12 = 14 means N = 14 + 12. Flip the operation!');
+        }
+        if (pct >= 70 && pct < 90) {
+            tips.push('\u{1F44D} Good equation solving! Make sure to check: does your answer make the equation true?');
+        }
+        if (pct >= 90) {
+            tips.push('\u2B50 Excellent equation skills!');
+        }
+    }
+
+    // Timeout-specific tip
+    if (s.timedOut > 0 && tips.length > 0) {
+        tips.push('\u{1F3C3} <strong>Speed tip:</strong> Even if you\'re not 100% sure, enter your best guess before time runs out!');
+    }
+
+    return tips;
 }
 
 // ==================== SESSION HISTORY ====================
 
 function saveSession(total, maxScore) {
+    if (maxScore === 0) return; // Don't save empty sessions
     const history = JSON.parse(localStorage.getItem('mathBowlHistory') || '[]');
 
     const roundDetails = [];
@@ -1402,7 +1658,7 @@ function renderHistory() {
     btnClear.classList.remove('hidden');
     let html = '';
     history.forEach((session, si) => {
-        const pct = Math.round((session.score / session.maxScore) * 100);
+        const pct = session.maxScore > 0 ? Math.round((session.score / session.maxScore) * 100) : 0;
         const medal = pct >= 90 ? '\u{1F3C6}' : pct >= 70 ? '\u{1F31F}' : pct >= 50 ? '\u{1F44D}' : '\u{1F4AA}';
 
         html += '<details class="history-entry">';
@@ -1484,11 +1740,107 @@ function stopTimer() {
     dom.timerBar.style.width = rect.width + 'px';
 }
 
+// ==================== PAUSE / RESUME ====================
+
+function pauseGame() {
+    if (state.isPaused) return;
+    state.isPaused = true;
+
+    // Stop speech
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+
+    // Pause timer (save remaining time)
+    if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+    }
+    if (state.timerTimeout) {
+        clearTimeout(state.timerTimeout);
+        state.timerTimeout = null;
+    }
+    // Freeze bar position
+    const rect = dom.timerBar.getBoundingClientRect();
+    dom.timerBar.style.transition = 'none';
+    dom.timerBar.style.width = rect.width + 'px';
+
+    // Pause feedback delay if active
+    if (state.feedbackTimeout) {
+        clearTimeout(state.feedbackTimeout);
+        state.feedbackTimeout = null;
+    }
+
+    // Show overlay
+    document.getElementById('pause-overlay').classList.remove('hidden');
+}
+
+function resumeGame() {
+    if (!state.isPaused) return;
+    state.isPaused = false;
+
+    // Hide overlay
+    document.getElementById('pause-overlay').classList.add('hidden');
+
+    // Determine which screen is active and resume accordingly
+    const activeScreen = document.querySelector('.screen.active');
+    if (!activeScreen) return;
+
+    if (activeScreen.id === 'screen-question' && !state.isAnswered) {
+        // Resume the timer with remaining time
+        resumeTimer();
+        dom.answerInput.focus();
+    } else if (activeScreen.id === 'screen-feedback') {
+        // Resume feedback — advance to next question after a short delay
+        const lastResult = state.results[state.results.length - 1];
+        const delay = (lastResult && lastResult.correct) ? FEEDBACK_DELAY : FEEDBACK_DELAY_WRONG;
+        state.feedbackTimeout = setTimeout(() => {
+            state.feedbackTimeout = null;
+            state.currentQuestion++;
+            if (state.currentQuestion < QUESTIONS_PER_ROUND && state.currentQuestion < state.questions.length) {
+                showQuestion();
+            } else {
+                showRoundSummary();
+            }
+        }, delay);
+    }
+}
+
+function resumeTimer() {
+    const remaining = state.timeLeft;
+    if (remaining <= 0) {
+        timeUp();
+        return;
+    }
+
+    // Animate bar from current position to 0 over remaining seconds
+    void dom.timerBar.offsetHeight;
+    dom.timerBar.style.transition = 'width ' + remaining + 's linear';
+    dom.timerBar.style.width = '0%';
+
+    state.timerInterval = setInterval(() => {
+        state.timeLeft--;
+        dom.timerText.textContent = Math.max(0, state.timeLeft);
+        if (state.timeLeft <= 2) {
+            dom.timerBar.classList.remove('warning');
+            dom.timerBar.classList.add('danger');
+        } else if (state.timeLeft <= 3) {
+            dom.timerBar.classList.add('warning');
+        }
+    }, 1000);
+
+    state.timerTimeout = setTimeout(() => {
+        timeUp();
+    }, remaining * 1000);
+}
+
 // ==================== EVENT LISTENERS ====================
 
 function setupEventListeners() {
     $('btn-start').addEventListener('click', startGame);
     $('btn-study-sheet').addEventListener('click', startStudySheet);
+    $('btn-ss-patterns').addEventListener('click', () => startStudySheetRound('patterns'));
+    $('btn-ss-chain').addEventListener('click', () => startStudySheetRound('chain'));
+    $('btn-ss-addition').addEventListener('click', () => startStudySheetRound('addition'));
+    $('btn-ss-subtraction').addEventListener('click', () => startStudySheetRound('subtraction'));
     $('btn-practice-2020').addEventListener('click', startPractice2020);
     $('btn-practice-2020-chain').addEventListener('click', startPractice2020Chain);
     $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
@@ -1498,6 +1850,10 @@ function setupEventListeners() {
     $('btn-practice-2024-adding').addEventListener('click', startPractice2024Adding);
     $('btn-practice-2024-bonus').addEventListener('click', startPractice2024Bonus);
     $('btn-begin-round').addEventListener('click', beginRound);
+
+    // Pause / Resume
+    $('btn-pause').addEventListener('click', pauseGame);
+    $('btn-resume').addEventListener('click', resumeGame);
 
     // Practice round buttons
     document.querySelectorAll('.btn-practice').forEach(btn => {

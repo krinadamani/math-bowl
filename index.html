@@ -32,7 +32,11 @@
                 </div>
                 <div class="full-game-section">
                     <button id="btn-start" class="btn btn-primary btn-large">Full Game (4 Rounds) &#128640;</button>
-                <button id="btn-study-sheet" class="btn btn-study-sheet btn-large">2025 Study Sheet (15 Q each) &#128218;</button>
+                <button id="btn-study-sheet" class="btn btn-study-sheet btn-large">2025 Study Sheet — All 4 Rounds &#128218;</button>
+                <button id="btn-ss-patterns" class="btn btn-study-sheet btn-large">2025 Patterns (15 Q) &#128290;</button>
+                <button id="btn-ss-chain" class="btn btn-study-sheet btn-large">2025 Mental Math Chain (15 Q) &#128279;</button>
+                <button id="btn-ss-addition" class="btn btn-study-sheet btn-large">2025 Addition (15 Q) &#10133;</button>
+                <button id="btn-ss-subtraction" class="btn btn-study-sheet btn-large">2025 Subtraction (15 Q) &#10134;</button>
                 <button id="btn-practice-2024-patterns" class="btn btn-practice-2024 btn-large">2024 Practice Patterns (3 Sets) &#128203;</button>
                 <button id="btn-practice-2024-chain" class="btn btn-practice-2024 btn-large">2024 Practice Chain (3 Sets) &#128203;</button>
                 <button id="btn-practice-2024-adding" class="btn btn-practice-2024 btn-large">2024 Practice Adding (3 Sets) &#128203;</button>
@@ -71,6 +75,7 @@
                     <span id="header-round" class="header-item">Round 1</span>
                     <span id="header-question" class="header-item">Q 1/10</span>
                     <span id="header-score" class="header-item">&#11088; 0</span>
+                    <button id="btn-pause" class="btn-pause header-pause" title="Pause">&#9208;</button>
                     <button class="btn-end-game header-end" data-action="end-game">End</button>
                 </div>
 
@@ -90,6 +95,17 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- Pause Overlay -->
+        <div id="pause-overlay" class="pause-overlay hidden">
+            <div class="card pause-card">
+                <div class="pause-icon">&#9208;</div>
+                <h2 class="pause-title">Game Paused</h2>
+                <p class="pause-hint">Take your time!</p>
+                <button id="btn-resume" class="btn btn-primary btn-large">Resume &#9654;</button>
+                <button class="btn-end-game pause-end" data-action="end-game">End Game</button>
             </div>
         </div>
 
@@ -126,6 +142,10 @@
                     <span>Yours</span>
                 </div>
                 <div id="final-breakdown" class="final-breakdown"></div>
+                <div id="tips-section" class="tips-section hidden">
+                    <h2 class="tips-heading">&#128161; Tips &amp; Recommendations</h2>
+                    <div id="tips-content" class="tips-content"></div>
+                </div>
                 <button id="btn-restart" class="btn btn-primary btn-large">Play Again &#128260;</button>
             </div>
         </div>
