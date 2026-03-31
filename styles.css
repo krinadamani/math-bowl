@@ -812,6 +812,54 @@ body {
     color: white;
 }
 
+/* ========== SET PICKER ========== */
+.btn-set-toggle {
+    position: relative;
+}
+
+.btn-set-toggle::after {
+    content: ' \25BC';
+    font-size: 0.75em;
+    opacity: 0.7;
+}
+
+.set-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 12px 0 4px;
+}
+
+.set-picker.hidden {
+    display: none;
+}
+
+.btn-set {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    background: #f0f0ff;
+    color: var(--dark);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    min-width: 68px;
+}
+
+.btn-set:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    color: white;
+}
+
+.btn-set-all {
+    background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+    font-weight: 700;
+}
+
+.btn-set-all:hover {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
 /* ========== HISTORY SECTION ========== */
 .history-section {
     margin-top: 24px;

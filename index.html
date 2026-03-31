@@ -37,14 +37,74 @@
                 <button id="btn-ss-chain" class="btn btn-study-sheet btn-large">2025 Mental Math Chain (15 Q) &#128279;</button>
                 <button id="btn-ss-addition" class="btn btn-study-sheet btn-large">2025 Addition (15 Q) &#10133;</button>
                 <button id="btn-ss-subtraction" class="btn btn-study-sheet btn-large">2025 Subtraction (15 Q) &#10134;</button>
-                <button id="btn-practice-2024-patterns" class="btn btn-practice-2024 btn-large">2024 Practice Patterns (3 Sets) &#128203;</button>
-                <button id="btn-practice-2024-chain" class="btn btn-practice-2024 btn-large">2024 Practice Chain (3 Sets) &#128203;</button>
-                <button id="btn-practice-2024-adding" class="btn btn-practice-2024 btn-large">2024 Practice Adding (3 Sets) &#128203;</button>
-                <button id="btn-practice-2024-bonus" class="btn btn-practice-2024 btn-large">2024 Practice Find N (3 Sets) &#128203;</button>
-                <button id="btn-practice-2020" class="btn btn-practice-2020 btn-large">2020 Practice Patterns (6 Sets) &#128203;</button>
-                <button id="btn-practice-2020-chain" class="btn btn-practice-2020 btn-large">2020 Practice Chain (6 Sets) &#128203;</button>
-                <button id="btn-practice-2020-adding" class="btn btn-practice-2020 btn-large">2020 Practice Adding (6 Sets) &#128203;</button>
-                <button id="btn-practice-2020-equations" class="btn btn-practice-2020 btn-large">2020 Practice Find N (6 Sets) &#128203;</button>
+                <button id="btn-practice-2024-patterns" class="btn btn-practice-2024 btn-large btn-set-toggle" data-target="sets-2024-patterns">2024 Patterns &#128290;</button>
+                <div id="sets-2024-patterns" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2024-patterns" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2024-patterns" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2024-patterns" data-set="2">Set 3</button>
+                    <button class="btn btn-set btn-set-all" data-category="2024-patterns" data-set="all">All 3</button>
+                </div>
+                <button id="btn-practice-2024-chain" class="btn btn-practice-2024 btn-large btn-set-toggle" data-target="sets-2024-chain">2024 Chain &#128279;</button>
+                <div id="sets-2024-chain" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2024-chain" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2024-chain" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2024-chain" data-set="2">Set 3</button>
+                    <button class="btn btn-set btn-set-all" data-category="2024-chain" data-set="all">All 3</button>
+                </div>
+                <button id="btn-practice-2024-adding" class="btn btn-practice-2024 btn-large btn-set-toggle" data-target="sets-2024-adding">2024 Adding &#10133;</button>
+                <div id="sets-2024-adding" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2024-adding" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2024-adding" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2024-adding" data-set="2">Set 3</button>
+                    <button class="btn btn-set btn-set-all" data-category="2024-adding" data-set="all">All 3</button>
+                </div>
+                <button id="btn-practice-2024-bonus" class="btn btn-practice-2024 btn-large btn-set-toggle" data-target="sets-2024-bonus">2024 Find N &#128203;</button>
+                <div id="sets-2024-bonus" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2024-bonus" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2024-bonus" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2024-bonus" data-set="2">Set 3</button>
+                    <button class="btn btn-set btn-set-all" data-category="2024-bonus" data-set="all">All 3</button>
+                </div>
+                <button id="btn-practice-2020" class="btn btn-practice-2020 btn-large btn-set-toggle" data-target="sets-2020-patterns">2020 Patterns &#128290;</button>
+                <div id="sets-2020-patterns" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2020-patterns" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2020-patterns" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2020-patterns" data-set="2">Set 3</button>
+                    <button class="btn btn-set" data-category="2020-patterns" data-set="3">Set 4</button>
+                    <button class="btn btn-set" data-category="2020-patterns" data-set="4">Set 5</button>
+                    <button class="btn btn-set" data-category="2020-patterns" data-set="5">Set 6</button>
+                    <button class="btn btn-set btn-set-all" data-category="2020-patterns" data-set="all">All 6</button>
+                </div>
+                <button id="btn-practice-2020-chain" class="btn btn-practice-2020 btn-large btn-set-toggle" data-target="sets-2020-chain">2020 Chain &#128279;</button>
+                <div id="sets-2020-chain" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2020-chain" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2020-chain" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2020-chain" data-set="2">Set 3</button>
+                    <button class="btn btn-set" data-category="2020-chain" data-set="3">Set 4</button>
+                    <button class="btn btn-set" data-category="2020-chain" data-set="4">Set 5</button>
+                    <button class="btn btn-set" data-category="2020-chain" data-set="5">Set 6</button>
+                    <button class="btn btn-set btn-set-all" data-category="2020-chain" data-set="all">All 6</button>
+                </div>
+                <button id="btn-practice-2020-adding" class="btn btn-practice-2020 btn-large btn-set-toggle" data-target="sets-2020-adding">2020 Adding &#10133;</button>
+                <div id="sets-2020-adding" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2020-adding" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2020-adding" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2020-adding" data-set="2">Set 3</button>
+                    <button class="btn btn-set" data-category="2020-adding" data-set="3">Set 4</button>
+                    <button class="btn btn-set" data-category="2020-adding" data-set="4">Set 5</button>
+                    <button class="btn btn-set" data-category="2020-adding" data-set="5">Set 6</button>
+                    <button class="btn btn-set btn-set-all" data-category="2020-adding" data-set="all">All 6</button>
+                </div>
+                <button id="btn-practice-2020-equations" class="btn btn-practice-2020 btn-large btn-set-toggle" data-target="sets-2020-equations">2020 Find N &#128203;</button>
+                <div id="sets-2020-equations" class="set-picker hidden">
+                    <button class="btn btn-set" data-category="2020-equations" data-set="0">Set 1</button>
+                    <button class="btn btn-set" data-category="2020-equations" data-set="1">Set 2</button>
+                    <button class="btn btn-set" data-category="2020-equations" data-set="2">Set 3</button>
+                    <button class="btn btn-set" data-category="2020-equations" data-set="3">Set 4</button>
+                    <button class="btn btn-set" data-category="2020-equations" data-set="4">Set 5</button>
+                    <button class="btn btn-set" data-category="2020-equations" data-set="5">Set 6</button>
+                    <button class="btn btn-set btn-set-all" data-category="2020-equations" data-set="all">All 6</button>
+                </div>
                 </div>
                 <div class="history-section">
                     <p class="practice-label">&#128202; Past Sessions:</p>

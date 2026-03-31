@@ -916,181 +916,45 @@ function startStudySheetRound(sectionKey) {
     showRoundIntro();
 }
 
-function startPractice2020() {
+// ==================== PRACTICE SET CATALOG ====================
+
+const PRACTICE_CATALOG = {
+    '2024-patterns':   { data: PRACTICE_2024_PATTERNS, name: 'Patterns',  emoji: '\u{1F522}', year: '2024' },
+    '2024-chain':      { data: PRACTICE_2024_CHAIN,    name: 'Chain',     emoji: '\u{1F517}', year: '2024' },
+    '2024-adding':     { data: PRACTICE_2024_ADDING,   name: 'Adding',    emoji: '\u2795',    year: '2024' },
+    '2024-bonus':      { data: PRACTICE_2024_BONUS,    name: 'Find N',    emoji: '\u{1F9E9}', year: '2024' },
+    '2020-patterns':   { data: PRACTICE_2020_PATTERNS, name: 'Patterns',  emoji: '\u{1F522}', year: '2020' },
+    '2020-chain':      { data: PRACTICE_2020_CHAIN,    name: 'Chain',     emoji: '\u{1F517}', year: '2020' },
+    '2020-adding':     { data: PRACTICE_2020_ADDING,   name: 'Adding',    emoji: '\u2795',    year: '2020' },
+    '2020-equations':  { data: PRACTICE_2020_EQUATIONS, name: 'Find N',   emoji: '\u{1F9E9}', year: '2020' }
+};
+
+function startPracticeSet(category, setIndex) {
+    const cat = PRACTICE_CATALOG[category];
+    if (!cat) return;
+
     restoreRounds();
     QUESTIONS_PER_ROUND = 10;
-
-    // Replace ROUNDS with 6 pattern sets
     while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2020_PATTERNS.length; i++) {
+
+    if (setIndex === 'all') {
+        // All sets as sequential rounds
+        for (let i = 0; i < cat.data.length; i++) {
+            ROUNDS.push({
+                name: cat.name + ' Set ' + (i + 1),
+                emoji: cat.emoji,
+                description: cat.year + ' Practice \u2014 Set ' + (i + 1) + ' of ' + cat.data.length,
+                generator: ((idx) => () => shuffle([...cat.data[idx]]))(i)
+            });
+        }
+    } else {
+        // Single set
+        const idx = parseInt(setIndex, 10);
         ROUNDS.push({
-            name: 'Patterns Set ' + (i + 1),
-            emoji: '\u{1F522}',
-            description: '2020 Practice \u2014 Set ' + (i + 1) + ' of 6',
-            generator: ((idx) => () => shuffle([...PRACTICE_2020_PATTERNS[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2020Chain() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    // Replace ROUNDS with 6 chain sets
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2020_CHAIN.length; i++) {
-        ROUNDS.push({
-            name: 'Chain Set ' + (i + 1),
-            emoji: '\u{1F517}',
-            description: '2020 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_CHAIN.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2020_CHAIN[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2020Adding() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    // Replace ROUNDS with 6 adding sets
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2020_ADDING.length; i++) {
-        ROUNDS.push({
-            name: 'Adding Set ' + (i + 1),
-            emoji: '\u2795',
-            description: '2020 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_ADDING.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2020_ADDING[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2020Equations() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2020_EQUATIONS.length; i++) {
-        ROUNDS.push({
-            name: 'Find N Set ' + (i + 1),
-            emoji: '\u{1F9E9}',
-            description: '2020 Equations \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2020_EQUATIONS.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2020_EQUATIONS[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2024Patterns() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2024_PATTERNS.length; i++) {
-        ROUNDS.push({
-            name: 'Patterns Set ' + (i + 1),
-            emoji: '\u{1F522}',
-            description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_PATTERNS.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2024_PATTERNS[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2024Chain() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2024_CHAIN.length; i++) {
-        ROUNDS.push({
-            name: 'Chain Set ' + (i + 1),
-            emoji: '\u{1F517}',
-            description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_CHAIN.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2024_CHAIN[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2024Adding() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2024_ADDING.length; i++) {
-        ROUNDS.push({
-            name: 'Adding Set ' + (i + 1),
-            emoji: '\u{2795}',
-            description: '2024 Practice \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_ADDING.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2024_ADDING[idx]]))(i)
-        });
-    }
-
-    state.currentRound = 0;
-    state.practiceMode = false;
-    state.studySheetMode = false;
-    state.scores = new Array(ROUNDS.length).fill(0);
-    state.allResults = ROUNDS.map(() => []);
-
-    showRoundIntro();
-}
-
-function startPractice2024Bonus() {
-    restoreRounds();
-    QUESTIONS_PER_ROUND = 10;
-
-    while (ROUNDS.length > 0) ROUNDS.pop();
-    for (let i = 0; i < PRACTICE_2024_BONUS.length; i++) {
-        ROUNDS.push({
-            name: 'Find N Set ' + (i + 1),
-            emoji: '\u{1F9E9}',
-            description: '2024 Bonus \u2014 Set ' + (i + 1) + ' of ' + PRACTICE_2024_BONUS.length,
-            generator: ((idx) => () => shuffle([...PRACTICE_2024_BONUS[idx]]))(i)
+            name: cat.name + ' Set ' + (idx + 1),
+            emoji: cat.emoji,
+            description: cat.year + ' Practice \u2014 Set ' + (idx + 1) + ' of ' + cat.data.length,
+            generator: () => shuffle([...cat.data[idx]])
         });
     }
 
@@ -1844,14 +1708,22 @@ function setupEventListeners() {
     $('btn-ss-chain').addEventListener('click', () => startStudySheetRound('chain'));
     $('btn-ss-addition').addEventListener('click', () => startStudySheetRound('addition'));
     $('btn-ss-subtraction').addEventListener('click', () => startStudySheetRound('subtraction'));
-    $('btn-practice-2020').addEventListener('click', startPractice2020);
-    $('btn-practice-2020-chain').addEventListener('click', startPractice2020Chain);
-    $('btn-practice-2020-adding').addEventListener('click', startPractice2020Adding);
-    $('btn-practice-2020-equations').addEventListener('click', startPractice2020Equations);
-    $('btn-practice-2024-patterns').addEventListener('click', startPractice2024Patterns);
-    $('btn-practice-2024-chain').addEventListener('click', startPractice2024Chain);
-    $('btn-practice-2024-adding').addEventListener('click', startPractice2024Adding);
-    $('btn-practice-2024-bonus').addEventListener('click', startPractice2024Bonus);
+
+    // Set toggle buttons — expand/collapse set pickers
+    document.querySelectorAll('.btn-set-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = document.getElementById(btn.dataset.target);
+            if (target) target.classList.toggle('hidden');
+        });
+    });
+
+    // Set pick buttons — start a single set or all sets
+    document.querySelectorAll('.btn-set').forEach(btn => {
+        btn.addEventListener('click', () => {
+            startPracticeSet(btn.dataset.category, btn.dataset.set);
+        });
+    });
+
     $('btn-begin-round').addEventListener('click', beginRound);
 
     // Pause / Resume
