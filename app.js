@@ -1,8 +1,8 @@
 // ==================== CONFIGURATION ====================
 let QUESTIONS_PER_ROUND = 10;
-const TIME_LIMIT = 10; // seconds
-const SPEECH_RATE = 0.75;
-const SPEECH_RATE_CHAIN = 0.65;
+const TIME_LIMIT = 15; // seconds
+const SPEECH_RATE = 0.55;
+const SPEECH_RATE_CHAIN = 0.45;
 const FEEDBACK_DELAY = 2500; // ms to show feedback before next question
 const FEEDBACK_DELAY_WRONG = 5000; // ms for wrong/timeout — more time to review
 
